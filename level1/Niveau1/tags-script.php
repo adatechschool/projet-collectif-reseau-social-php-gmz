@@ -72,7 +72,7 @@ function displayPosts()
         // 2020-11-20 18:26:50
         $dateParsed = date_parse_from_format("Y-m-d H:i:s", $date);
 
-        echo "<pre>" . print_r($dateParsed, 1) . "</pre>";
+        // echo "<pre>" . print_r($dateParsed, 1) . "</pre>";
 
         $monthNum = $dateParsed["month"];
         $dateObj   = DateTime::createFromFormat('!m', $monthNum);
