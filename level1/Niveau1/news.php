@@ -124,13 +124,15 @@
                         <h3>
                             <time><?php echo $post['created'] ?></time>
                         </h3>
-                        <address>AREMPLACER</address>
+                        <address><?php echo $post['author_name'] ?></address>
                         <div>
-                            <p>AREMPLACER</p>
+                            <p><?php echo $post['content'] ?></p>
                         </div>
                         <footer>
-                            <small>♥ AREMPLACER </small>
-                            <a href="">AREMPLACER</a>,
+                            <small>♥ <?php echo $post['like_number'] ?></small>
+                            <a href="">#<?php 
+                                           $hashtag = str_replace(',', ', #', $post['taglist']);
+                                           echo $hashtag  ?></a>
                         </footer>
                     </article>
                     <?php
