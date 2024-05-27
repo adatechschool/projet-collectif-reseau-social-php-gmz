@@ -85,17 +85,26 @@
                 <article class='parameters'>
                     <h3>Mes paramètres</h3>
                     <dl>
-                        <dt>MAX</dt>
                         <dt>Pseudo</dt>
-                        <dd>Félicie</dd>
+                        <dd>
+                            <?php echo $user["alias"] ?>
+                        </dd>
                         <dt>Email</dt>
-                        <dd>felicie@test.org</dd>
+                        <dd>
+                        <?php echo $user["email"] ?>
+                        </dd>
                         <dt>Nombre de message</dt>
-                        <dd>42</dd>
+                        <dd>
+                            <?php echo $user["totalpost"] ?>
+                        </dd>
                         <dt>Nombre de "J'aime" donnés </dt>
-                        <dd>12</dd>
+                        <dd>
+                        <?php echo $user["totalgiven"] ?>
+                        </dd>
                         <dt>Nombre de "J'aime" reçus</dt>
-                        <dd>53</dd>
+                        <dd>
+                            <?php echo $user["totalrecieved"] ?>
+                        </dd>
                     </dl>
 
                 </article>
