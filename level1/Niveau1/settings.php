@@ -85,6 +85,7 @@
                 <article class='parameters'>
                     <h3>Mes paramètres</h3>
                     <dl>
+                        <dt>MAXIME</dt>
                         <dt>Pseudo</dt>
                         <dd>Félicie</dd>
                         <dt>Email</dt>
