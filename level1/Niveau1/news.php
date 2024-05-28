@@ -113,7 +113,7 @@
             while ($post = $lesInformations->fetch_assoc()) {
                 //la ligne ci-dessous doit etre supprimée mais regardez ce 
                 //qu'elle affiche avant pour comprendre comment sont organisées les information dans votre 
-                // echo "<pre>" . print_r($post, 1) . "</pre>";
+                echo "<pre>" . print_r($post, 1) . "</pre>";
 
                 // @todo : Votre mission c'est de remplacer les AREMPLACER par les bonnes valeurs
                 // ci-dessous par les bonnes valeurs cachées dans la variable $post 
@@ -121,20 +121,19 @@
                 // 
                 // avec le ? > ci-dessous on sort du mode php et on écrit du html comme on veut... mais en restant dans la boucle
                 $authorId = $post["id"];
+                include './scripts.php';
             ?>
                 <article>
                     <h3>
                         <time><?php echo $post['created'] ?></time>
                     </h3>
-                    <address><a href="./wall.php?user_id=<?php echo $authorId?>"><?php echo $post['author_name'] ?></a></address>
+                    <address><a href="./wall.php?user_id=<?php echo $authorId ?>"><?php echo $post['author_name'] ?></a></address>
                     <div>
                         <p><?php echo $post['content'] ?></p>
                     </div>
                     <footer>
                         <small>♥ <?php echo $post['like_number'] ?></small>
-                        <a href="">#<?php
-                                    $hashtag = str_replace(',', ', #', $post['taglist']);
-                                    echo $hashtag  ?></a>
+                        <?php echo displayTags($post['taglist']) ?>
                     </footer>
                 </article>
             <?php
