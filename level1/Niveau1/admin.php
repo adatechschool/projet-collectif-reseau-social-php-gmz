@@ -62,11 +62,12 @@
                  */
                 while ($tag = $lesInformations->fetch_assoc())
                 {
-                    
+                    $tagId=$tag["id"];
                     ?>
                     <article>
+                    <a href="./tags.php?tag_id=<?php echo $tagId?>">
                         <h3>#<?php echo $tag['label'] ?></h3>
-                        <p>id:<?php echo $tag['id'] ?></p>
+                        <p>id:<?php echo $tag['id'] ?></p></a>
                         <nav>
                             <a href="tags.php?tag_id=<?php echo $tag['id'] ?>">Messages</a>
                         </nav>
@@ -95,11 +96,12 @@
                  */
                 while ($tag = $lesInformations->fetch_assoc())
                 {
-                    
+                    $authorId = $tag["id"];
                     ?>
                     <article>
+                        <a href="./wall.php?user_id=<?php echo $authorId?>">
                         <h3><?php echo $tag['alias'] ?></h3>
-                        <p>id:<?php echo $tag['id'] ?></p>
+                        <p>id:<?php echo $tag['id'] ?></p></a>
                         <nav>
                             <a href="wall.php?user_id=<?php echo $tag['id'] ?>">Mur</a>
                             | <a href="feed.php?user_id=<?php echo $tag['id'] ?>">Flux</a>

@@ -82,9 +82,11 @@
             // Etape 2: Poser une question à la base de donnée et récupérer ses informations
             // cette requete vous est donnée, elle est complexe mais correcte, 
             // si vous ne la comprenez pas c'est normal, passez, on y reviendra
+            // ajout de la ligne 89 (users.id) dans la requête pour les utliser dans les balises <a>
             $laQuestionEnSql = "
                     SELECT posts.content,
                     posts.created,
+                    users.id,
                     users.alias as author_name,  
                     count(likes.id) as like_number,  
                     GROUP_CONCAT(DISTINCT tags.label) AS taglist 
@@ -118,12 +120,13 @@
                 // on vous met le pied à l'étrier avec created
                 // 
                 // avec le ? > ci-dessous on sort du mode php et on écrit du html comme on veut... mais en restant dans la boucle
+                $authorId = $post["id"];
             ?>
                 <article>
                     <h3>
                         <time><?php echo $post['created'] ?></time>
                     </h3>
-                    <address><?php echo $post['author_name'] ?></address>
+                    <address><a href="./wall.php?user_id=<?php echo $authorId?>"><?php echo $post['author_name'] ?></a></address>
                     <div>
                         <p><?php echo $post['content'] ?></p>
                     </div>

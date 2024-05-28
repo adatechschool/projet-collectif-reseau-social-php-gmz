@@ -56,10 +56,12 @@
                 //@todo: faire la boucle while de parcours des abonnés et mettre les bonnes valeurs ci dessous 
                 while ($followers = $lesInformations->fetch_assoc())
                 {
+                    $authorId = $followers["id"];
+
                 ?>
                 <article>
                     <img src="user.jpg" alt="blason"/>
-                    <h3><?php echo $followers['alias'] ?></h3>
+                    <h3><a href="./wall.php?user_id=<?php echo $authorId?>"><?php echo $followers['alias'] ?></a></h3>
                     <p>id:<?php echo $followers['id'] ?></p>
                 </article>
                 <?php

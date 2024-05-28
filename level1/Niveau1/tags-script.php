@@ -73,13 +73,13 @@ function displayPosts()
 
         $finalStringDate = "$dayNumber $monthName $year à $hour" . "h" . "$minute";
         // == END of Date
-
+        $authorId=$post["id"];
 ?>
         <article>
             <h3>
                 <time datetime='2020-02-01 11:12:13'><?php echo $finalStringDate ?></time>
             </h3>
-            <address>par <?php echo $post["author_name"] ?></address>
+            <address>par <a href="./wall.php?user_id=<?php echo $authorId?>"><?php echo $post["author_name"] ?></a></address>
             <div>
                 <p><?php echo $post["content"] ?></p>
             </div>

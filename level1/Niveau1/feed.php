@@ -74,6 +74,7 @@
                 $laQuestionEnSql = "
                     SELECT posts.content,
                     posts.created,
+                    users.id,
                     users.alias as author_name,  
                     count(likes.id) as like_number,  
                     GROUP_CONCAT(DISTINCT tags.label) AS taglist 
@@ -99,12 +100,13 @@
                  * Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php
                  * A vous de retrouver comment faire la boucle while de parcours...
                  */
+                $authorId = $feed["id"];
                 ?>                
                 <article>
                     <h3>
                         <time><?php echo $feed['created'] ?></time>
                     </h3>
-                    <address>par <?php echo $feed['author_name'] ?></address>
+                    <address>par <a href="./wall.php?user_id=<?php echo $authorId?>"><?php echo $feed['author_name'] ?></a></address>
                     <div>
                         <p><?php echo $feed['content'] ?></p>
                     </div>                                            
