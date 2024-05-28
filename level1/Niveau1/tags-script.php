@@ -65,7 +65,7 @@ function displayPosts()
 
     while ($post = $lesInformations->fetch_assoc()) {
 
-        echo "<pre>" . print_r($post, 1) . "</pre>";
+        // echo "<pre>" . print_r($post, 1) . "</pre>";
 
         // ==== Get date and different element for the posts
         $date = $post["created"];
