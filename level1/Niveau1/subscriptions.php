@@ -33,7 +33,7 @@
                     <p>Sur cette page vous trouverez la liste des personnes dont
                         l'utilisatrice
                         n° <?php echo intval($_GET['user_id']) ?>
-                        suit les messages
+                        suit les messages.
                     </p>
 
                 </section>
@@ -47,7 +47,7 @@
                 include 'sqlConnection.php';
                 // Etape 3: récupérer le nom de l'utilisateur
                 $laQuestionEnSql = "
-                    SELECT users.* 
+                    SELECT users.*
                     FROM followers 
                     LEFT JOIN users ON users.id=followers.followed_user_id 
                     WHERE followers.following_user_id='$userId'
@@ -56,12 +56,17 @@
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 // Etape 4: à vous de jouer
                 //@todo: faire la boucle while de parcours des abonnés et mettre les bonnes valeurs ci dessous 
+                while ($post = $lesInformations->fetch_assoc())
+                {
                 ?>
                 <article>
                     <img src="user.jpg" alt="blason"/>
-                    <h3>Alexandra</h3>
-                    <p>id:654</p>                    
+                    <h3><?php echo $post['alias'] ?></h3>
+                    <p>Id : <?php echo $post['id'] ?></p>                    
                 </article>
+                <?php
+                }
+                ?>
             </main>
         </div>
     </body>
