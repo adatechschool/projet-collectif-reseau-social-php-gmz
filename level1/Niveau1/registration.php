@@ -56,7 +56,7 @@
 
 
                     //Etape 3 : Ouvrir une connexion avec la base de donnée.
-                    include "../../level1/Niveau1/sqlConnection.php";
+                    include "./sqlConnection.php";
                     // $mysqli = new mysqli("localhost", "root", "", "socialnetwork");
 
 

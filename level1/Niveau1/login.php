@@ -61,7 +61,7 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 
                     //Etape 3 : Ouvrir une connexion avec la base de donnée.
-                    include "../../level1/Niveau1/sqlConnection.php";
+                    include "./sqlConnection.php";
                     // $mysqli = new mysqli("localhost", "root", "root", "socialnetwork_tests");
 
 
