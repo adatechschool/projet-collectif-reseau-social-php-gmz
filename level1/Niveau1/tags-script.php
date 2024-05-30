@@ -48,12 +48,12 @@ function getInformationsFromPosts()
 
 function displayPosts()
 {
+    include "./scripts.php";
     $lesInformations = getInformationsFromPosts();
     // $post = $lesInformations->fetch_assoc();
+// echo "<pre>" . print_r($lesInformations, 1) . "</pre>";
 
-    while ($post = $lesInformations->fetch_assoc()) {
-
-        // echo "<pre>" . print_r($post, 1) . "</pre>";
+while ($post = $lesInformations->fetch_assoc()){
 
         // ==== Get date and different element for the posts
         $date = $post["created"];
@@ -85,9 +85,27 @@ function displayPosts()
             </div>
             <footer>
                 <small>♥ <?php echo $post["like_number"] ?></small>
-                <a href="">#lorem</a>,
-                <a href="">#piscitur</a>,
+               
+<?php              
+$newtagidlist = explode(",", $post['tagidlist']);
+$newtaglist = explode(",", $post['taglist']);
+
+
+        if (count($newtagidlist) > 1 ){
+            for($i=0; $i<count($newtagidlist); $i++){
+        
+             ?>
+            <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">#<?php 
+                                           $hashtag = str_replace(',', ', #', $newtaglist[$i]);
+                                           echo $hashtag  ?></a><?php
+        }
+        }
+        else{?>
+            <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>">#<?php echo $newtaglist[0] ?></a><?php
+        }
+?>
             </footer>
         </article>
+
 <?php }
 }

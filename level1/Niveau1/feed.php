@@ -77,7 +77,8 @@
                     users.id,
                     users.alias as author_name,  
                     count(likes.id) as like_number,  
-                    GROUP_CONCAT(DISTINCT tags.label) AS taglist 
+                    GROUP_CONCAT(DISTINCT tags.id ORDER BY tags.id ASC) AS tagidlist,
+                    GROUP_CONCAT(DISTINCT tags.label ORDER BY tags.id ASC) AS taglist 
                     FROM followers 
                     JOIN users ON users.id=followers.followed_user_id
                     JOIN posts ON posts.user_id=users.id
@@ -112,9 +113,24 @@
                     </div>                                            
                     <footer>
                         <small>♥ <?php echo $feed['like_number'] ?></small>
-                        <a href="">#<?php 
-                                           $hashtag = str_replace(',', ', #', $feed['taglist']);
-                                           echo $hashtag  ?></a>
+                        <?php
+                        $newtagidlist = explode(",", $feed['tagidlist']);
+                        $newtaglist = explode(",", $feed['taglist']);
+                        
+                        
+                                if (count($newtagidlist) > 1 ){
+                                    for($i=0; $i<count($newtagidlist); $i++){
+                                
+                                     ?>
+                                    <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">#<?php 
+                                                                   $hashtag = str_replace(',', ', #', $newtaglist[$i]);
+                                                                   echo $hashtag  ?></a><?php
+                                }
+                                }
+                                else{?>
+                                    <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>">#<?php echo $newtaglist[0] ?></a><?php
+                                }
+                        ?>
                     </footer>
                 </article>
                 <?php
