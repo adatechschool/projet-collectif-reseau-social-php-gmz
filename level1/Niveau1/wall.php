@@ -70,7 +70,9 @@
                  */
                 $laQuestionEnSql = "
                     SELECT posts.content, posts.created, users.alias as author_name, 
-                    COUNT(likes.id) as like_number, GROUP_CONCAT(DISTINCT tags.label) AS taglist 
+                    COUNT(likes.id) as like_number, 
+                    GROUP_CONCAT(DISTINCT tags.id ORDER BY tags.id ASC) AS tagidlist,
+                    GROUP_CONCAT(DISTINCT tags.label ORDER BY tags.id ASC) AS taglist 
                     FROM posts
                     JOIN users ON  users.id=posts.user_id
                     LEFT JOIN posts_tags ON posts.id = posts_tags.post_id  
@@ -104,9 +106,27 @@
                         </div>                                           
                         <footer>
                         <small>♥ <?php echo $post['like_number'] ?></small>
-                            <a href="">#<?php 
-                                           $hashtag = str_replace(',', ', #', $post['taglist']);
-                                           echo $hashtag  ?></a>
+                                           
+
+<?php 
+
+
+$newtagidlist = explode(",", $post['tagidlist']);
+$newtaglist = explode(",", $post['taglist']);
+
+
+        if (count($newtagidlist) > 1 ){
+            for($i=0; $i<count($newtagidlist); $i++){
+        
+             ?>
+            <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">#<?php 
+                                           $hashtag = str_replace(',', ', #', $newtaglist[$i]);
+                                           echo $hashtag  ?></a><?php
+        }
+        }
+        else{?>
+            <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>">#<?php echo $newtaglist[0] ?></a><?php
+        }?>
                         </footer>
                     </article>
                 <?php } ?>
