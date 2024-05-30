@@ -1,5 +1,7 @@
 <?php
 session_start();
+$_SESSION["connected_id"] = 5;
+$sessionId = $_SESSION["connected_id"];
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 ?>
 <!doctype html>
@@ -47,7 +49,7 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
          * Etape 2: se connecter à la base de donnée
          */
         //$mysqli = new mysqli("localhost", "root", "root", "socialnetwork");
-        include 'sqlConnection.php';
+        include './sqlConnection.php';
         ?>
 
         <aside>
@@ -69,95 +71,120 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                 </p>
             </section>
 
-            <!-- Formulaire pour écrire un message sur son propre mur -->
-            <article>
-                <h2>Poster un message</h2>
-                <?php
+
+            <?php
+
+            if ($userId == $sessionId) {
+            ?>
+
+                <!-- Formulaire pour écrire un message sur son propre mur -->
+                <article>
+                    <h2>Poster un message</h2>
+                    <?php
 
 
-                /**
-                 * BD
-                 */
-                include '../../level1/Niveau1/sqlConnection.php';
-                // $mysqli = new mysqli("localhost", "root", "root", "socialnetwork_tests");
+                    /**
+                     * BD
+                     */
+                    include './sqlConnection.php';
+                    // $mysqli = new mysqli("localhost", "root", "root", "socialnetwork_tests");
 
 
-                /**
-                 * Récupération de la liste des auteurs
-                 */
-                $listAuteurs = [];
-                $laQuestionEnSql = "SELECT * FROM users";
-                $lesInformations = $mysqli->query($laQuestionEnSql);
-                while ($user = $lesInformations->fetch_assoc()) {
-                    $listAuteurs[$user['id']] = $user['alias'];
-                }
-
-
-                /**
-                 * TRAITEMENT DU FORMULAIRE
-                 */
-                // Etape 1 : vérifier si on est en train d'afficher ou de traiter le formulaire
-                // si on recoit un champs auteur rempli il y a une chance que ce soit un traitement
-                $enCoursDeTraitement = isset($_POST['auteur']);
-                if ($enCoursDeTraitement) {
-                    // on ne fait ce qui suit que si un formulaire a été soumis.
-
-
-                    // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
-                    // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
-                    echo "<pre>" . print_r($_POST, 1) . "</pre>";
-                    // et complétez le code ci dessous en remplaçant les ???
-
-                    // ==== Changement de author_id par l'ID de la SESSION en cours 
-                    // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
-                    // $authorId = $_POST['auteur'];
-                    $authorId = $_SESSION['connected_id'];
-                    $_SESSION['connected_id'] = 5;
-                    $postContent = $_POST['message'];
-
-
-                    //Etape 3 : Petite sécurité
-                    // pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
-                    $authorId = intval($mysqli->real_escape_string($authorId));
-                    $postContent = $mysqli->real_escape_string($postContent);
-
-
-                    //Etape 4 : construction de la requete
-                    $lInstructionSql = "INSERT INTO posts "
-                        . "(id, user_id, content, created) "
-                        . "VALUES (NULL, "
-                        . $authorId . ", "
-                        . "'" . $postContent . "', "
-                        . "NOW()
-                        );";
-                    // echo $lInstructionSql;
-
-
-                    // Etape 5 : execution
-                    $ok = $mysqli->query($lInstructionSql);
-                    if (!$ok) {
-                        echo "Impossible d'ajouter le message: " . $mysqli->error;
-                    } else {
-                        echo "Message posté en tant que :" . $listAuteurs[$authorId];
+                    /**
+                     * Récupération de la liste des auteurs
+                     */
+                    $listAuteurs = [];
+                    $laQuestionEnSql = "SELECT * FROM users";
+                    $lesInformations = $mysqli->query($laQuestionEnSql);
+                    while ($user = $lesInformations->fetch_assoc()) {
+                        $listAuteurs[$user['id']] = $user['alias'];
                     }
-                }
-                ?>
-                <form action="wall.php?user_id=<?php echo $_SESSION['connected_id']; ?>" method="post">
-                    <input type='hidden'>
-                    <dl>
-                        <dt><label for='auteur'>Auteur</label></dt>
-                        <dd><select name='auteur'>
-                                <?php
-                                foreach ($listAuteurs as $id => $alias)
-                                    echo "<option value='$id'>$alias</option>";
-                                ?>
-                            </select></dd>
-                        <dt><label for='message'>Message</label></dt>
-                        <dd><textarea name='message'></textarea></dd>
-                    </dl>
-                    <input type='submit'>
-                </form>
-            </article>
+
+
+                    /**
+                     * TRAITEMENT DU FORMULAIRE
+                     */
+                    // Etape 1 : vérifier si on est en train d'afficher ou de traiter le formulaire
+                    // si on recoit un champs auteur rempli il y a une chance que ce soit un traitement
+                    $enCoursDeTraitement = isset($_POST['auteur']);
+                    if ($enCoursDeTraitement) {
+                        // on ne fait ce qui suit que si un formulaire a été soumis.
+
+
+                        // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
+                        // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
+                        echo "<pre>" . print_r($_POST, 1) . "</pre>";
+                        // et complétez le code ci dessous en remplaçant les ???
+
+                        // ==== Changement de author_id par l'ID de la SESSION en cours 
+                        // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
+                        // $authorId = $_POST['auteur'];
+                        $authorId = $_SESSION['connected_id'];
+                        $_SESSION['connected_id'] = 5;
+                        $postContent = $_POST['message'];
+
+
+                        //Etape 3 : Petite sécurité
+                        // pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
+                        $authorId = intval($mysqli->real_escape_string($authorId));
+                        $postContent = $mysqli->real_escape_string($postContent);
+
+
+                        //Etape 4 : construction de la requete
+                        $lInstructionSql = "INSERT INTO posts "
+                            . "(id, user_id, content, created) "
+                            . "VALUES (NULL, "
+                            . $authorId . ", "
+                            . "'" . $postContent . "', "
+                            . "NOW()
+                            );";
+                        // echo $lInstructionSql;
+
+
+                        // Etape 5 : execution
+                        $ok = $mysqli->query($lInstructionSql);
+                        if (!$ok) {
+                            echo "Impossible d'ajouter le message: " . $mysqli->error;
+                        } else {
+                            echo "Message posté en tant que :" . $listAuteurs[$authorId];
+                        }
+                    }
+                    ?>
+                    <form action="wall.php?user_id=<?php echo $_SESSION['connected_id']; ?>" method="post">
+                        <input type='hidden'>
+                        <dl>
+                            <dt><label for='auteur'>Auteur</label></dt>
+                            <dd><select name='auteur'>
+                                    <?php
+                                    foreach ($listAuteurs as $id => $alias)
+                                        echo "<option value='$id'>$alias</option>";
+                                    ?>
+                                </select></dd>
+                            <dt><label for='message'>Message</label></dt>
+                            <dd><textarea name='message'></textarea></dd>
+                        </dl>
+                        <input type='submit'>
+                    </form>
+                </article>
+
+            <?php } else {
+
+                // ==== Si on est PAS abonné =>
+
+                echo "<pre>" . print_r("abonne toi", 1) . "</pre>";
+                // ==== Faire un bouton pour s'abonner 
+                // => Doit faire un post en DB
+
+                // ==== Si on EST abonné =>
+                // == Faire un bouton pour se désabonné
+                // => Doit faire un put en DB ?
+
+            }
+
+
+            ?>
+
+
 
         </aside>
         <main>
@@ -218,7 +245,7 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                                                                                             echo '#' . $newtaglist[$i]  ?></a><?php
                                                                                                                             }
                                                                                                                         } elseif (strlen($newtagidlist[0]) == 1) {
-                                                                                                                           
+
                                                                                                                                 ?>
                             <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a><?php
                                                                                                                             }
