@@ -25,7 +25,7 @@ function displayTags($string)
     $data = $mysqli->query($allTagsQuery);
 
     if (count($taglist) > 1 ){
-        foreach (taglist as $tag){?>
+        foreach ($taglist as $tag){?>
             <a href="./tags.php?tag_id=<?php echo $post['tagidlist'] ?>">#<?php 
                                            $hashtag = str_replace(',', ', #', $post['taglist']);
                                            echo $hashtag  ?></a><?php

@@ -48,7 +48,7 @@ function getInformationsFromPosts()
 
 function displayPosts()
 {
-    include "./scripts.php";
+    //include "./scripts.php";
     $lesInformations = getInformationsFromPosts();
     // $post = $lesInformations->fetch_assoc();
 // echo "<pre>" . print_r($lesInformations, 1) . "</pre>";

@@ -1,4 +1,4 @@
-<?php
+ <?php
 session_start();
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 ?>
