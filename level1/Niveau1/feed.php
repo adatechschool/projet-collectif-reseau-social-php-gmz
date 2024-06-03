@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+$sessionId = $_SESSION["connected_id"];
+echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
+
+if (!$sessionId) {
+    header('Location: ./login.php');
+}
+?>
 <!doctype html>
 <html lang="fr">
 
@@ -124,9 +134,9 @@
                         ?>
                                 <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>"><?php
                                                                                             echo '#' . $newtaglist[$i]  ?></a><?php
-                                                                    }
-                                                                } elseif (strlen($newtagidlist[0]) == 1) {
-                                                                        ?>
+                                                                                                                            }
+                                                                                                                        } elseif (strlen($newtagidlist[0]) == 1) {
+                                                                                                                                ?>
                             <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a><?php
                                                                                                                             }
                                                                                                                                 ?>

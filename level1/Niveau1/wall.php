@@ -1,8 +1,13 @@
 <?php
 session_start();
-$_SESSION["connected_id"] = 5;
+// $_SESSION["connected_id"] = 5;
+// unset($_SESSION["connected_id"]);
 $sessionId = $_SESSION["connected_id"];
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
+
+if (!$sessionId) {
+    header('Location: ./login.php');
+}
 ?>
 <!doctype html>
 <html lang="fr">
@@ -19,16 +24,16 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
         <img src="resoc.jpg" alt="Logo de notre réseau social" />
         <nav id="menu">
             <a href="news.php">Actualités</a>
-            <a href="wall.php?user_id=5">Mur</a>
-            <a href="feed.php?user_id=5">Flux</a>
+            <a href="wall.php">Mur</a>
+            <a href="feed.php?user_id=<?php echo $sessionId ?>">Flux</a>
             <a href="tags.php?tag_id=1">Mots-clés</a>
         </nav>
         <nav id="user">
             <a href="#">Profil</a>
             <ul>
-                <li><a href="settings.php?user_id=5">Paramètres</a></li>
-                <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
-                <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
+                <li><a href="settings.php?user_id=<?php echo $sessionId ?>">Paramètres</a></li>
+                <li><a href="followers.php?user_id=<?php echo $sessionId ?>">Mes suiveurs</a></li>
+                <li><a href="subscriptions.php?user_id=<?php echo $sessionId ?>">Mes abonnements</a></li>
             </ul>
 
         </nav>
@@ -43,6 +48,9 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
          * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
          */
         $userId = intval($_GET['user_id']);
+        if (!$userId) {
+            Header("Location: ./wall.php?user_id=$sessionId");
+        }
         ?>
         <?php
         /**
