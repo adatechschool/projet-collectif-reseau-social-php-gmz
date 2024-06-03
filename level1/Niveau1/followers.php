@@ -1,9 +1,9 @@
 <?php
 session_start();
-$sessionId = $_SESSION["connected_id"];
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
-if (!$sessionId) {
+if (isset($_SESSION["connected_id"])) {
+    $sessionId = $_SESSION["connected_id"];
     header('Location: ./login.php');
 }
 ?>
@@ -51,7 +51,7 @@ if (!$sessionId) {
             <?php
             // Etape 1: récupérer l'id de l'utilisateur
             $userId = intval($_GET['user_id']);
-            if (!$userId || $userId != $sessionId) {
+            if ((!$userId || $userId != $sessionId) && $sessionId) {
                 Header("Location: ./followers.php?user_id=$sessionId");
             }
             // Etape 2: se connecter à la base de donnée

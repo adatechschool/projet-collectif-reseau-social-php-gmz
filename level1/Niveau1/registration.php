@@ -1,3 +1,14 @@
+<?php
+session_start();
+// unset($_SESSION["connected_id"]);
+echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
+
+if (isset($_SESSION["connected_id"])) {
+    $sessionId = $_SESSION["connected_id"];
+    header('Location: ./wall.php');
+}
+
+?>
 <!doctype html>
 <html lang="fr">
 
@@ -13,16 +24,16 @@
         <img src="resoc.jpg" alt="Logo de notre réseau social" />
         <nav id="menu">
             <a href="news.php">Actualités</a>
-            <a href="wall.php?user_id=5">Mur</a>
-            <a href="feed.php?user_id=5">Flux</a>
+            <a href="wall.php">Mur</a>
+            <a href="feed.php">Flux</a>
             <a href="tags.php?tag_id=1">Mots-clés</a>
         </nav>
         <nav id="user">
             <a href="#">Profil</a>
             <ul>
-                <li><a href="settings.php?user_id=5">Paramètres</a></li>
-                <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
-                <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
+                <li><a href="settings.php">Paramètres</a></li>
+                <li><a href="followers.php">Mes suiveurs</a></li>
+                <li><a href="subscriptions.php">Mes abonnements</a></li>
             </ul>
 
         </nav>
@@ -45,6 +56,7 @@
                 // si on recoit un champs email rempli il y a une chance que ce soit un traitement
                 $enCoursDeTraitement = isset($_POST['email']);
                 if ($enCoursDeTraitement) {
+
                     // on ne fait ce qui suit que si un formulaire a été soumis.
                     // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                     // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
@@ -84,23 +96,28 @@
                     if (!$ok) {
                         echo "L'inscription a échouée : " . $mysqli->error;
                     } else {
+                        $isPosted = true;
                         echo "Votre inscription est un succès : " . $new_alias;
                         echo " <a href='login.php'>Connectez-vous.</a>";
                     }
                 }
                 ?>
-                <form action="registration.php" method="post">
-                    <input type='hidden'>
-                    <dl>
-                        <dt><label for='pseudo'>Pseudo</label></dt>
-                        <dd><input type='text' name='pseudo'></dd>
-                        <dt><label for='email'>E-Mail</label></dt>
-                        <dd><input type='email' name='email'></dd>
-                        <dt><label for='motpasse'>Mot de passe</label></dt>
-                        <dd><input type='password' name='motpasse'></dd>
-                    </dl>
-                    <input type='submit'>
-                </form>
+                <?php
+                $isPosted = false;
+                if (!$isPosted) { ?>
+                    <form action="registration.php" method="post">
+                        <input type='hidden'>
+                        <dl>
+                            <dt><label for='pseudo'>Pseudo</label></dt>
+                            <dd><input type='text' name='pseudo'></dd>
+                            <dt><label for='email'>E-Mail</label></dt>
+                            <dd><input type='email' name='email'></dd>
+                            <dt><label for='motpasse'>Mot de passe</label></dt>
+                            <dd><input type='password' name='motpasse'></dd>
+                        </dl>
+                        <input type='submit'>
+                    </form>
+                <?php } ?>
             </article>
         </main>
     </div>

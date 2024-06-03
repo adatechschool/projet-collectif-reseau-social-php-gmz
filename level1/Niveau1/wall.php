@@ -2,10 +2,11 @@
 session_start();
 // $_SESSION["connected_id"] = 5;
 // unset($_SESSION["connected_id"]);
-$sessionId = $_SESSION["connected_id"];
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
-if (!$sessionId) {
+if (isset($_SESSION["connected_id"])) {
+    $sessionId = $_SESSION["connected_id"];
+
     header('Location: ./login.php');
 }
 ?>
@@ -48,7 +49,7 @@ if (!$sessionId) {
          * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
          */
         $userId = intval($_GET['user_id']);
-        if (!$userId) {
+        if (!$userId && $sessionId) {
             Header("Location: ./wall.php?user_id=$sessionId");
         }
         ?>
