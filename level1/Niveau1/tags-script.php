@@ -51,9 +51,9 @@ function displayPosts()
     //include "./scripts.php";
     $lesInformations = getInformationsFromPosts();
     // $post = $lesInformations->fetch_assoc();
-// echo "<pre>" . print_r($lesInformations, 1) . "</pre>";
+    // echo "<pre>" . print_r($lesInformations, 1) . "</pre>";
 
-while ($post = $lesInformations->fetch_assoc()){
+    while ($post = $lesInformations->fetch_assoc()) {
 
         // ==== Get date and different element for the posts
         $date = $post["created"];
@@ -73,37 +73,36 @@ while ($post = $lesInformations->fetch_assoc()){
 
         $finalStringDate = "$dayNumber $monthName $year à $hour" . "h" . "$minute";
         // == END of Date
-        $authorId=$post["id"];
+        $authorId = $post["id"];
 ?>
         <article>
             <h3>
                 <time datetime='2020-02-01 11:12:13'><?php echo $finalStringDate ?></time>
             </h3>
-            <address>par <a href="./wall.php?user_id=<?php echo $authorId?>"><?php echo $post["author_name"] ?></a></address>
+            <address>par <a href="./wall.php?user_id=<?php echo $authorId ?>"><?php echo $post["author_name"] ?></a></address>
             <div>
                 <p><?php echo $post["content"] ?></p>
             </div>
             <footer>
                 <small>♥ <?php echo $post["like_number"] ?></small>
-               
-<?php              
-$newtagidlist = explode(",", $post['tagidlist']);
-$newtaglist = explode(",", $post['taglist']);
+
+                <?php
+                $newtagidlist = explode(",", $post['tagidlist']);
+                $newtaglist = explode(",", $post['taglist']);
 
 
-        if (count($newtagidlist) > 1 ){
-            for($i=0; $i<count($newtagidlist); $i++){
-        
-             ?>
-            <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">#<?php 
-                                           $hashtag = str_replace(',', ', #', $newtaglist[$i]);
-                                           echo $hashtag  ?></a><?php
-        }
-        }
-        else{?>
-            <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>">#<?php echo $newtaglist[0] ?></a><?php
-        }
-?>
+                if (count($newtagidlist) > 1) {
+                    for ($i = 0; $i < count($newtagidlist); $i++) {
+                ?>
+                        <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>"><?php
+                                                                                    // $hashtag = str_replace(',', ', #', $newtaglist[$i]);
+                                                                                    echo '#' . $newtaglist[$i]  ?></a><?php
+                                                                                                                    }
+                                                                                                                } elseif (strlen($newtagidlist[0]) == 1) {
+                                                                                                                        ?>
+                    <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a><?php
+                                                                                                                    }
+                                                                                                                        ?>
             </footer>
         </article>
 

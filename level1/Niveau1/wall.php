@@ -245,7 +245,6 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                                                                                             echo '#' . $newtaglist[$i]  ?></a><?php
                                                                                                                             }
                                                                                                                         } elseif (strlen($newtagidlist[0]) == 1) {
-
                                                                                                                                 ?>
                             <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a><?php
                                                                                                                             }
