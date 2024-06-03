@@ -1,6 +1,10 @@
 <?php
 session_start();
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
+$sessionId = $_SESSION["connected_id"];
+if ($sessionId) {
+    header('Location: ./wall.php');
+}
 ?>
 <!doctype html>
 <html lang="fr">
