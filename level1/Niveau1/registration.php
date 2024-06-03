@@ -1,11 +1,12 @@
 <?php
 session_start();
-// unset($_SESSION["connected_id"]);
+unset($_SESSION["connected_id"]);
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 if (isset($_SESSION["connected_id"])) {
-    $sessionId = $_SESSION["connected_id"];
     header('Location: ./wall.php');
+} else {
+    $sessionId = $_SESSION["connected_id"];
 }
 
 ?>
@@ -60,7 +61,7 @@ if (isset($_SESSION["connected_id"])) {
                     // on ne fait ce qui suit que si un formulaire a été soumis.
                     // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                     // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
-                    echo "<pre>" . print_r($_POST, 1) . "</pre>";
+                    // echo "<pre>" . print_r($_POST, 1) . "</pre>";
                     // et complétez le code ci dessous en remplaçant les ???
                     $new_email = $_POST['email'];
                     $new_alias = $_POST['pseudo'];
@@ -98,13 +99,12 @@ if (isset($_SESSION["connected_id"])) {
                     } else {
                         $isPosted = true;
                         echo "Votre inscription est un succès : " . $new_alias;
-                        echo " <a href='login.php'>Connectez-vous.</a>";
+                        echo " <br><a href='login.php'>Connectez-vous.</a>";
                     }
                 }
                 ?>
                 <?php
-                $isPosted = false;
-                if (!$isPosted) { ?>
+                if (!$enCoursDeTraitement) { ?>
                     <form action="registration.php" method="post">
                         <input type='hidden'>
                         <dl>

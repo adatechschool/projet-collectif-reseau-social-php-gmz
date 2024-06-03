@@ -4,10 +4,10 @@ session_start();
 // unset($_SESSION["connected_id"]);
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
-if (isset($_SESSION["connected_id"])) {
-    $sessionId = $_SESSION["connected_id"];
-
+if (!isset($_SESSION["connected_id"])) {
     header('Location: ./login.php');
+} else {
+    $sessionId = $_SESSION["connected_id"];
 }
 ?>
 <!doctype html>
@@ -129,7 +129,7 @@ if (isset($_SESSION["connected_id"])) {
                         // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
                         // $authorId = $_POST['auteur'];
                         $authorId = $_SESSION['connected_id'];
-                        $_SESSION['connected_id'] = 5;
+                        // $_SESSION['connected_id'] = 5;
                         $postContent = $_POST['message'];
 
 
