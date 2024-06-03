@@ -25,15 +25,15 @@ if (!$sessionId) {
         <nav id="menu">
             <a href="news.php">Actualités</a>
             <a href="wall.php">Mur</a>
-            <a href="feed.php?user_id=<?php echo $sessionId ?>">Flux</a>
+            <a href="feed.php">Flux</a>
             <a href="tags.php?tag_id=1">Mots-clés</a>
         </nav>
         <nav id="user">
             <a href="#">Profil</a>
             <ul>
-                <li><a href="settings.php?user_id=<?php echo $sessionId ?>">Paramètres</a></li>
-                <li><a href="followers.php?user_id=<?php echo $sessionId ?>">Mes suiveurs</a></li>
-                <li><a href="subscriptions.php?user_id=<?php echo $sessionId ?>">Mes abonnements</a></li>
+                <li><a href="settings.php">Paramètres</a></li>
+                <li><a href="followers.php">Mes suiveurs</a></li>
+                <li><a href="subscriptions.php">Mes abonnements</a></li>
             </ul>
 
         </nav>
