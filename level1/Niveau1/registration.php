@@ -1,6 +1,6 @@
 <?php
 session_start();
-unset($_SESSION["connected_id"]);
+// unset($_SESSION["connected_id"]);
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 if (isset($_SESSION["connected_id"])) {
