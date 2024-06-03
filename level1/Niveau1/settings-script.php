@@ -56,3 +56,21 @@ $totalPost = $user["totalpost"];
 $email = $user["email"];
 $likesGiven = $user["totalgiven"];
 $likesReceived = $user["totalrecieved"];
+
+$isLoggedOut = isset($_POST["logout"]);
+if ($isLoggedOut) {
+    unset($_SESSION["connected_id"]);
+    if (!isset($_SESSION["connected_id"])) {
+        header('Location: ./login.php');
+    }
+}
+
+function displayLogOut()
+{
+?>
+    <form action="" method="post">
+        <input type="submit" name="logout" value="Log out">
+    </form>
+<?php
+
+}

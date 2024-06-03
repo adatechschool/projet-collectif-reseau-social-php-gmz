@@ -1,7 +1,5 @@
 <?php
 include "./settings-script.php";
-
-
 ?>
 
 <!doctype html>
@@ -70,6 +68,8 @@ include "./settings-script.php";
                         <?php echo $likesReceived ?>
                     </dd>
                 </dl>
+
+                <?php displayLogOut(); ?>
 
             </article>
         </main>
