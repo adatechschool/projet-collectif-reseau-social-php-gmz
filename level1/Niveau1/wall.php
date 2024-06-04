@@ -156,7 +156,6 @@ if (!isset($_SESSION["connected_id"])) {
                         // ==== Changement de author_id par l'ID de la SESSION en cours 
                         // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
                         // $authorId = $_POST['auteur'];
-                        $_SESSION['connected_id'] = 5;
                         $authorId = $_SESSION['connected_id'];
                         $postContent = $_POST['message'];
 
