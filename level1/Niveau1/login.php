@@ -4,8 +4,8 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 if (isset($_SESSION["connected_id"])) {
     $sessionId = $_SESSION["connected_id"];
-
     header('Location: ./wall.php');
+    exit();
 }
 ?>
 <!doctype html>
@@ -42,41 +42,39 @@ if (isset($_SESSION["connected_id"])) {
 
         <aside>
             <h2>Présentation</h2>
-            <p>Bienvenu sur notre réseau social.</p>
+            <p>Bienvenue sur notre réseau social.</p>
         </aside>
         <main>
             <article>
                 <h2>Connexion</h2>
                 <?php
+                include "./sqlConnection.php";
+
                 /**
                  * TRAITEMENT DU FORMULAIRE
                  */
                 // Etape 1 : vérifier si on est en train d'afficher ou de traiter le formulaire
                 // si on recoit un champs email rempli il y a une chance que ce soit un traitement
-                $enCoursDeTraitement = isset($_POST['email']);
-                if ($enCoursDeTraitement) {
-                    // on ne fait ce qui suit que si un formulaire a été soumis.
 
+                if (isset($_POST['email']) && isset($_POST['motpasse'])) {
+                    // on ne fait ce qui suit que si un formulaire a été soumis.
 
                     // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                     // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
                     echo "<pre>" . print_r($_POST, 1) . "</pre>";
-                    // et complétez le code ci dessous en remplaçant les ???
-                    $emailAVerifier = $_POST['email'];
-                    $passwdAVerifier = $_POST['motpasse'];
 
-
+                    $emailAVerifier = $mysqli->real_escape_string($_POST['email']);
+                    $passwdAVerifier = $mysqli->real_escape_string($_POST['motpasse']);
+                    $passwdAVerifier = md5($passwdAVerifier);
                     //Etape 3 : Ouvrir une connexion avec la base de donnée.
-                    include "./sqlConnection.php";
-                    // $mysqli = new mysqli("localhost", "root", "root", "socialnetwork_tests");
+
 
 
                     //Etape 4 : Petite sécurité
                     // pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
-                    $emailAVerifier = $mysqli->real_escape_string($emailAVerifier);
-                    $passwdAVerifier = $mysqli->real_escape_string($passwdAVerifier);
-                    // on crypte le mot de passe pour éviter d'exposer notre utilisatrice en cas d'intrusion dans nos systèmes
-                    $passwdAVerifier = md5($passwdAVerifier);
+
+                    // // on crypte le mot de passe pour éviter d'exposer notre utilisatrice en cas d'intrusion dans nos systèmes
+
                     // NB: md5 est pédagogique mais n'est pas recommandée pour une vraies sécurité
 
 
@@ -91,33 +89,76 @@ if (isset($_SESSION["connected_id"])) {
                     $res = $mysqli->query($lInstructionSql);
                     $user = $res->fetch_assoc();
 
-                    // echo "<pre>" . print_r($user, 1) . "</pre>";
-
-                    if (!$user or $user["password"] != $passwdAVerifier) {
+                    if (!$user || $user["password"] != $passwdAVerifier) {
                         echo "La connexion a échouée. ";
                     } else {
                         echo "Votre connexion est un succès : " . $user['alias'] . ".";
-
-
                         // Etape 7 : Se souvenir que l'utilisateur s'est connecté pour la suite
-                        // documentation: https://www.php.net/manual/fr/session.examples.basic.php
                         $_SESSION['connected_id'] = $user['id'];
                         $transferId = $user['id'];
                         Header("Location: ./wall.php?user_id=$transferId");
+                        exit();
                     }
                 }
+
+                if (isset($_POST['email2']) && isset($_POST['newMotpasse'])) {
+                    $emailAVerifier = $mysqli->real_escape_string($_POST['email2']);
+                    $newPassword = $mysqli->real_escape_string($_POST['newMotpasse']);
+                    $newPassword = md5($newPassword);
+
+                    // on crypte le mot de passe pour éviter d'exposer notre utilisatrice en cas d'intrusion dans nos systèmes
+
+                    $updatePasswordSql = "
+                                                UPDATE users
+                                                SET password = '$newPassword'
+                                                WHERE email = '$emailAVerifier';
+                        ";
+                    if ($mysqli->query($updatePasswordSql)) {
+                        echo "Le mot de passe a été mis à jour avec succès.";
+                    } else {
+                        echo "Erreur lors de la mise à jour du mot de passe.";
+                    }
+                }
+
+                if (!isset($_POST['password'])) {
                 ?>
-                <form action="login.php" method="post">
-                    <input type='hidden'>
-                    <dl>
-                        <dt><label for='email'>E-Mail</label></dt>
-                        <dd><input type='email' name='email'></dd>
-                        <dt><label for='motpasse'>Mot de passe</label></dt>
-                        <dd><input type='password' name='motpasse'></dd>
-                    </dl>
-                    <input type='submit'>
-                </form>
-                <p>
+                    <form action="login.php" method="post">
+                        <input type='hidden'>
+                        <dl>
+                            <dt><label for='email'>E-Mail</label></dt>
+                            <dd><input type='email' name='email'></dd>
+                            <dt><label for='motpasse'>Mot de passe</label></dt>
+                            <dd><input type='password' name='motpasse'></dd>
+                        </dl>
+                        <input type='submit' value='Connexion'>
+                    </form>
+                    <form action="" method="post">
+                        <input type="hidden" name="password" value="true">
+                        <button type="submit" id="passwordButton" class="password">Modifier mot de passe</button>
+                    </form>
+
+                <?php
+                } else {
+                ?>
+                    <form action="login.php" method="post">
+                        <input type='hidden'>
+                        <dl>
+                            <dt><label for='email2'>E-Mail</label></dt>
+                            <dd><input type='email' name='email2'></dd>
+                            <dt><label for='newMotpasse'>Nouveau<br>mot de passe </label></dt>
+                            <br>
+                            <dd><input type='password' name='newMotpasse'></dd>
+                        </dl>
+                        <input type='submit' value='Mettre à jour le mot de passe'>
+
+                    </form><br>
+
+
+                <?php
+                }
+                ?>
+
+                <p><br>
                     Pas de compte?
                     <a href='registration.php'>Inscrivez-vous.</a>
                 </p>
