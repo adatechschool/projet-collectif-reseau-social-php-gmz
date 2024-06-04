@@ -101,7 +101,7 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                         <button type="submit" id="subscribeButton" class="unsubscribe">Se désabonner</button>
                     </form>
                 <?php
-                    //Construction de la requete pour supprimer un abonnement
+
                 }
             }
 
@@ -129,7 +129,7 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                      */
                     // Etape 1 : vérifier si on est en train d'afficher ou de traiter le formulaire
                     // si on recoit un champs auteur rempli il y a une chance que ce soit un traitement
-                    $enCoursDeTraitement = isset($_POST['auteur']);
+                    $enCoursDeTraitement = isset($_POST['message']);
                     if ($enCoursDeTraitement) {
                         // on ne fait ce qui suit que si un formulaire a été soumis.
 
@@ -142,8 +142,8 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                         // ==== Changement de author_id par l'ID de la SESSION en cours 
                         // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
                         // $authorId = $_POST['auteur'];
-                        $authorId = $_SESSION['connected_id'];
                         $_SESSION['connected_id'] = 5;
+                        $authorId = $_SESSION['connected_id'];
                         $postContent = $_POST['message'];
 
 
@@ -176,13 +176,6 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                     <form action="wall.php?user_id=<?php echo $_SESSION['connected_id']; ?>" method="post">
                         <input type='hidden'>
                         <dl>
-                            <dt><label for='auteur'>Auteur</label></dt>
-                            <dd><select name='auteur'>
-                                    <?php
-                                    foreach ($listAuteurs as $id => $alias)
-                                        echo "<option value='$id'>$alias</option>";
-                                    ?>
-                                </select></dd>
                             <dt><label for='message'>Message</label></dt>
                             <dd><textarea name='message'></textarea></dd>
                         </dl>
