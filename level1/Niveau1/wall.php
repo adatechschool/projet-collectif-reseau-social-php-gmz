@@ -226,10 +226,10 @@ if (!isset($_SESSION["connected_id"])) {
             <?php
 
             /**
-             * Etape 3: récupérer tous les messages de l'utilisatrice
+             * Etape 3: récupérer tous les messages de l'utilisatrice (+ ajout de posts.id)
              */
             $laQuestionEnSql = "
-                    SELECT posts.content, posts.created, users.alias as author_name, 
+                    SELECT posts.id, posts.content, posts.created, users.alias as author_name, 
                     COUNT(likes.id) as like_number, 
                     GROUP_CONCAT(DISTINCT tags.id ORDER BY tags.id ASC) AS tagidlist,
                     GROUP_CONCAT(DISTINCT tags.label ORDER BY tags.id ASC) AS taglist 
@@ -237,7 +237,7 @@ if (!isset($_SESSION["connected_id"])) {
                     JOIN users ON  users.id=posts.user_id
                     LEFT JOIN posts_tags ON posts.id = posts_tags.post_id  
                     LEFT JOIN tags       ON posts_tags.tag_id  = tags.id 
-                    LEFT JOIN likes      ON likes.post_id  = posts.id 
+                    LEFT JOIN likes      ON likes.post_id  = posts.id
                     WHERE posts.user_id='$userId' 
                     GROUP BY posts.id
                     ORDER BY posts.created DESC  
@@ -251,7 +251,6 @@ if (!isset($_SESSION["connected_id"])) {
              * Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php
              */
             while ($post = $lesInformations->fetch_assoc()) {
-                // echo "<pre>" . print_r($post, 1) . "</pre>";
 
             ?>
                 <article>
@@ -264,9 +263,44 @@ if (!isset($_SESSION["connected_id"])) {
                     </div>
                     <footer>
                         <small>♥ <?php echo $post['like_number'] ?></small>
-
-
                         <?php
+                        $messageid = $post['id'];
+                        echo "<pre>" . print_r($messageid, 1) . "</pre>";
+
+                        if (isset($_POST['like' . $messageid])) {
+                            // Ajouter un like
+                            $ajoutLikeSql = "INSERT INTO likes (id, user_id, post_id) VALUES (NULL, $sessionId, $messageid)";
+                            if (!$mysqli->query($ajoutLikeSql)) {
+                                echo "Erreur lors de l'ajout du like: " . $mysqli->error;
+                            }
+                        } elseif (isset($_POST['unlike' . $messageid])) {
+                            // Supprimer un like
+                            $suppressionLikeSql = "DELETE FROM likes WHERE user_id = $sessionId AND post_id = $messageid";
+                            if (!$mysqli->query($suppressionLikeSql)) {
+                                echo "Erreur lors de la suppression du like: " . $mysqli->error;
+                            }
+                        }
+
+                        // Vérifier si l'utilisateur a liké le post
+                        $esketulike = "SELECT * FROM likes WHERE post_id='$post[id]' AND user_id='$sessionId';";
+                        $likes = $mysqli->query($esketulike);
+                        echo "<pre>" . print_r($likes, 1) . "</pre>";
+
+                        if ($likes->num_rows == 0) {
+                        ?>
+                            <form method="post" action="">
+                                <input type="hidden" name="like<?php echo $messageid ?>" value="true">
+                                <button type="submit" id="likeButton" class="like">Like</button>
+                            </form>
+                        <?php
+                        } else {
+                        ?>
+                            <form method="post" action="">
+                                <input type="hidden" name="unlike<?php echo $messageid ?>" value="true">
+                                <button type="submit" id="likeButton" class="unlike">Unlike</button>
+                            </form>
+                        <?php
+                        }
                         $newtagidlist = explode(",", $post['tagidlist'] ?? '');
                         $newtaglist = explode(",", $post['taglist'] ?? '');
 
