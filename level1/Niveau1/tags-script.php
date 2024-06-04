@@ -75,7 +75,6 @@ function displayPosts()
         // == END of Date
         $authorId = $post["id"];
 
-        // detectTags($post["content"]);
 ?>
         <article>
             <h3>
