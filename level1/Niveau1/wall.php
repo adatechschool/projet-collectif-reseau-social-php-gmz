@@ -54,6 +54,11 @@ if (!isset($_SESSION["connected_id"])) {
          */
         //$mysqli = new mysqli("localhost", "root", "root", "socialnetwork");
         include './sqlConnection.php';
+
+        // ==== Recupération de l'alias vis à vis de l'id dans l'URL
+        $laQuestionEnSql = "SELECT alias FROM users WHERE id=$userId";
+        $lesInformations = $mysqli->query($laQuestionEnSql);
+        $user = $lesInformations->fetch_assoc();
         ?>
 
         <aside>
