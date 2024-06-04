@@ -121,8 +121,8 @@
                         <?php
 
 
-                        $newtagidlist = explode(",", $post['tagidlist']);
-                        $newtaglist = explode(",", $post['taglist']);
+                        $newtagidlist = explode(",", $post['tagidlist'] ?? '');
+                        $newtaglist = explode(",", $post['taglist'] ?? '');
 
 
                         if (count($newtagidlist) > 1) {
