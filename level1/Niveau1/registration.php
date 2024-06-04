@@ -95,7 +95,6 @@ if (isset($_SESSION["connected_id"])) {
                     if (!$ok) {
                         echo "L'inscription a échouée : " . $mysqli->error;
                     } else {
-                        $isPosted = true;
                         echo "Votre inscription est un succès : " . $new_alias;
                         echo " <br><a href='login.php'>Connectez-vous.</a>";
                     }
