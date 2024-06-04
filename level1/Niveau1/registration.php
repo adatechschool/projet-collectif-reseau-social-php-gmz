@@ -3,10 +3,8 @@ session_start();
 // unset($_SESSION["connected_id"]);
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
-if (!isset($_SESSION["connected_id"])) {
+if (isset($_SESSION["connected_id"])) {
     header('Location: ./wall.php');
-} else {
-    $sessionId = $_SESSION["connected_id"];
 }
 
 ?>
