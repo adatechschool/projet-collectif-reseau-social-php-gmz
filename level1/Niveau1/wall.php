@@ -35,34 +35,19 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
     </header>
     <div id="wrapper">
         <?php
-        /**
-         * Etape 1: Le mur concerne un utilisateur en particulier
-         * La première étape est donc de trouver quel est l'id de l'utilisateur
-         * Celui ci est indiqué en parametre GET de la page sous la forme user_id=...
-         * Documentation : https://www.php.net/manual/fr/reserved.variables.get.php
-         * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
-         */
-        $userId = intval($_GET['user_id']);
-        ?>
-        <?php
-        /**
-         * Etape 2: se connecter à la base de donnée
-         */
-        //$mysqli = new mysqli("localhost", "root", "root", "socialnetwork");
+        // Connexion à la base de données
         include './sqlConnection.php';
+
+        // Récupérer l'ID de l'utilisateur dont le mur est affiché
+        $userId = intval($_GET['user_id']);
+
+        // Récupérer le nom de l'utilisateur
+        $laQuestionEnSql = "SELECT users.alias FROM users WHERE id= '$userId' ";
+        $lesInformations = $mysqli->query($laQuestionEnSql);
+        $user = $lesInformations->fetch_assoc();
         ?>
 
         <aside>
-            <?php
-            /**
-             * Etape 3: récupérer le nom de l'utilisateur
-             */
-            $laQuestionEnSql = "SELECT users.alias FROM users WHERE id= '$userId' ";
-            $lesInformations = $mysqli->query($laQuestionEnSql);
-            $user = $lesInformations->fetch_assoc();
-            //@todo: afficher le résultat de la ligne ci dessous, remplacer XXX par l'alias et effacer la ligne ci-dessous
-            // echo "<pre>" . print_r($user, 1) . "</pre>";
-            ?>
             <img src="user.jpg" alt="Portrait de l'utilisatrice" />
             <section>
                 <h3>Présentation</h3>
@@ -74,21 +59,59 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
             <?php
 
-            if ($userId == $sessionId) {
-            ?>
+            if ($userId != $sessionId) {
+                if (isset($_POST['subscribe'])) {
+                    // Ajouter un abonnement
+                    $ajoutFollowersSql = "INSERT INTO followers (id, followed_user_id, following_user_id) 
+                                            VALUES (NULL, $userId, '$sessionId')";
+                    if (!$mysqli->query($ajoutFollowersSql)) {
+                        echo "Erreur lors de l'ajout de l'abonnement: " . $mysqli->error;
+                    }
+                } elseif (isset($_POST['unsubscribe'])) {
+                    // Supprimer un abonnement
+                    $suppressionFollowersSql = "DELETE FROM followers 
+                                                WHERE followed_user_id = $userId 
+                                                AND following_user_id = $sessionId";
+                    if (!$mysqli->query($suppressionFollowersSql)) {
+                        echo "Erreur lors de la suppression de l'abonnement: " . $mysqli->error;
+                    }
+                }
 
+                // Vérifier si l'utilisateur est abonné
+                $subscriptionsQuestion = "
+                    SELECT users.*
+                    FROM followers 
+                    LEFT JOIN users ON users.id=followers.followed_user_id 
+                    WHERE followers.following_user_id='$sessionId'
+                    AND followers.followed_user_id='$userId'
+                ";
+                $InfoSubscriptions = $mysqli->query($subscriptionsQuestion);
+
+                if ($InfoSubscriptions->num_rows == 0) {
+            ?>
+                    <form method="post" action="">
+                        <input type="hidden" name="subscribe" value="true">
+                        <button type="submit" id="subscribeButton" class="subscribe">S'abonner</button>
+                    </form>
+                <?php
+                } else {
+                ?>
+                    <form method="post" action="">
+                        <input type="hidden" name="unsubscribe" value="true">
+                        <button type="submit" id="subscribeButton" class="unsubscribe">Se désabonner</button>
+                    </form>
+                <?php
+                    //Construction de la requete pour supprimer un abonnement
+                }
+            }
+
+            if ($userId == $sessionId) {
+                ?>
                 <!-- Formulaire pour écrire un message sur son propre mur -->
                 <article>
                     <h2>Poster un message</h2>
+
                     <?php
-
-
-                    /**
-                     * BD
-                     */
-                    include './sqlConnection.php';
-                    // $mysqli = new mysqli("localhost", "root", "root", "socialnetwork_tests");
-
 
                     /**
                      * Récupération de la liste des auteurs
@@ -165,30 +188,19 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                         </dl>
                         <input type='submit'>
                     </form>
-                </article>
 
-            <?php } else {
 
-                // ==== Si on est PAS abonné =>
-
-                echo "<pre>" . print_r("abonne toi", 1) . "</pre>";
-                // ==== Faire un bouton pour s'abonner 
-                // => Doit faire un post en DB
-
-                // ==== Si on EST abonné =>
-                // == Faire un bouton pour se désabonné
-                // => Doit faire un put en DB ?
+                <?php
 
             }
-
-
-            ?>
-
-
-
+                ?>
+                </article>
         </aside>
+
         <main>
+
             <?php
+
             /**
              * Etape 3: récupérer tous les messages de l'utilisatrice
              */
@@ -233,8 +245,8 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                         <?php
 
 
-                        $newtagidlist = explode(",", $post['tagidlist']);
-                        $newtaglist = explode(",", $post['taglist']);
+                        $newtagidlist = explode(",", $post['tagidlist'] ?? '');
+                        $newtaglist = explode(",", $post['taglist'] ?? '');
 
 
                         if (count($newtagidlist) > 1) {
