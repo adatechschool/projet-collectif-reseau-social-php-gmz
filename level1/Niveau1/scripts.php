@@ -47,15 +47,14 @@ function detectTags($thePostContent, $thePostId)
     $newString = explode(",", $stringAgain);
     $stringAgain = implode(" ", $newString);
 
-    $newString = explode(" ", $stringAgain);
+    $newStringArray = explode(" ", $stringAgain);
 
     // === Array qui va contenir les mots avec #
-    foreach ($newString as $word) {
+    foreach ($newStringArray as $word) {
         if (str_contains($word, "#")) {
             $word = explode("#", $word);
             $word = implode("", $word);
             $word = trim($word);
-            // array_push($tagListFromPost, $word);
 
             $queryTagId = "
             SELECT id FROM tags WHERE tags.label='$word';
@@ -89,13 +88,4 @@ function detectTags($thePostContent, $thePostId)
             echo "<pre>" . print_r($word, 1) . "</pre>";
         }
     }
-    // === Join l'array avec des "," et supression des "#"
-    // $tagListString = implode(",", $tagListFromPost);
-    // $tagListString = explode("#", $tagListString);
-    // $tagListString = implode("", $tagListString);
-
-    // echo "<pre>" . print_r($tagListString, 1) . "</pre>";
-    // echo "<pre>" . print_r($stringAgain, 1) . "</pre>";
-    // echo "<pre>" . print_r($newString, 1) . "</pre>";
-    // return $tagListString;
 }

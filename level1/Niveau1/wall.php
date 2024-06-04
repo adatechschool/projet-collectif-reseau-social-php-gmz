@@ -197,7 +197,7 @@ if (!isset($_SESSION["connected_id"])) {
                         $response = $status->fetch_assoc();
                         $idFromPost = $response["id"];
 
-                        echo "<pre>" . print_r($idFromPost, 1) . "</pre>";
+                        // echo "<pre>" . print_r($idFromPost, 1) . "</pre>";
 
                         // === Function qui scan le contenu et met à jour la DB tags
                         // == Avec relation posts_tags
@@ -251,7 +251,7 @@ if (!isset($_SESSION["connected_id"])) {
              * Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php
              */
             while ($post = $lesInformations->fetch_assoc()) {
-                echo "<pre>" . print_r($post, 1) . "</pre>";
+                // echo "<pre>" . print_r($post, 1) . "</pre>";
 
             ?>
                 <article>
@@ -270,8 +270,8 @@ if (!isset($_SESSION["connected_id"])) {
                         $newtagidlist = explode(",", $post['tagidlist'] ?? '');
                         $newtaglist = explode(",", $post['taglist'] ?? '');
 
-                        echo "<pre>" . print_r($newtagidlist, 1) . "</pre>";
-                        echo "<pre>" . print_r($newtaglist, 1) . "</pre>";
+                        // echo "<pre>" . print_r($newtagidlist, 1) . "</pre>";
+                        // echo "<pre>" . print_r($newtaglist, 1) . "</pre>";
 
                         if (count($newtagidlist) > 1) {
                             for ($i = 0; $i < count($newtagidlist); $i++) {
