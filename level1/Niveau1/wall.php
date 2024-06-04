@@ -190,10 +190,10 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
         <main>
             <?php
             /**
-             * Etape 3: récupérer tous les messages de l'utilisatrice
+             * Etape 3: récupérer tous les messages de l'utilisatrice (+ ajout de posts.id)
              */
             $laQuestionEnSql = "
-                    SELECT posts.content, posts.created, users.alias as author_name, 
+                    SELECT posts.id, posts.content, posts.created, users.alias as author_name, 
                     COUNT(likes.id) as like_number, 
                     GROUP_CONCAT(DISTINCT tags.id ORDER BY tags.id ASC) AS tagidlist,
                     GROUP_CONCAT(DISTINCT tags.label ORDER BY tags.id ASC) AS taglist 
@@ -201,7 +201,7 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                     JOIN users ON  users.id=posts.user_id
                     LEFT JOIN posts_tags ON posts.id = posts_tags.post_id  
                     LEFT JOIN tags       ON posts_tags.tag_id  = tags.id 
-                    LEFT JOIN likes      ON likes.post_id  = posts.id 
+                    LEFT JOIN likes      ON likes.post_id  = posts.id
                     WHERE posts.user_id='$userId' 
                     GROUP BY posts.id
                     ORDER BY posts.created DESC  
@@ -216,7 +216,6 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
              */
             while ($post = $lesInformations->fetch_assoc()) {
 
-
             ?>
                 <article>
                     <h3>
@@ -228,7 +227,56 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                     </div>
                     <footer>
                         <small>♥ <?php echo $post['like_number'] ?></small>
+                        <?php 
+                        $esketulike = "SELECT user_id FROM likes 
+                                    WHERE post_id='$post[id]' AND user_id='$sessionId';";
 
+                        $lareponse = $mysqli->query($esketulike);
+                        $like = $lareponse->fetch_assoc();
+                        $messageid = $post['id'];
+                        echo "<pre>" . print_r($like, 1) . "</pre>";
+                        $liker = $_SESSION['connected_id'];
+                        $addedlike = $_POST;
+                        if(!$lareponse) {
+
+                            
+
+                            ?>
+                            <form action="" method="post">
+                                <input type="hidden" name="unlike" value="true">
+                                <button type="submit" id="unlikebutton" class="unlike">Unlike</button>
+                            </form>
+                                <?php
+                                //echo "<pre>" . print_r($_POST, 1) . "</pre>";
+                                $larequeteSQL = "DELETE INTO likes "
+                                . "(id, user_id, post_id) "
+                                ."VALUES (likes.id, 
+                                ". $liker. ", "
+                                . "'" . $post['id'] . "');";
+                               // echo $lInstructionSql;
+                               $lasuppression = $mysqli->query($larequeteSQL);
+                                
+                        }else {
+                            ?>
+
+                            </form><form action="" method="post">
+                                <input type="hidden" name="like" value="true">
+                                <button type="submit" id="likebutton" class="like">Like</button>
+                            </form>
+                            <?php
+                            echo "<pre>" . print_r($_POST, 1) . "</pre>";
+                            $lInstructionSql = "INSERT INTO likes "
+                                . "(id, user_id, post_id) "
+                                . "VALUES (NULL, "
+                                . $liker . ", "
+                                . "'" . $post['id'] . "');";
+
+                                $lajout = $mysqli->query($lInstructionSql);
+                        }
+
+
+                        ?>
+                        
 
                         <?php
 
