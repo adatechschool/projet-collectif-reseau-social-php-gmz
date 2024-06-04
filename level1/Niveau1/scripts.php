@@ -24,13 +24,22 @@ function displayTags($string)
         ";
     $data = $mysqli->query($allTagsQuery);
 
-    if (count($taglist) > 1 ){
-        foreach ($taglist as $tag){?>
-            <a href="./tags.php?tag_id=<?php echo $post['tagidlist'] ?>">#<?php 
-                                           $hashtag = str_replace(',', ', #', $post['taglist']);
-                                           echo $hashtag  ?></a><?php
+    if (count($taglist) > 1) {
+        foreach ($taglist as $tag) { ?>
+            <a href="./tags.php?tag_id=<?php echo $post['tagidlist'] ?>">#
+                <?php
+                $hashtag = str_replace(',', ', #', $post['taglist']);
+                echo $hashtag  ?></a>
+<?php
         }
     }
+}
 
-    }
+function detectTags($string)
+{
+    $newString = explode("'", $string);
+    $stringAgain = implode(" ", $newString);
 
+
+    echo "<pre>" . print_r($stringAgain, 1) . "</pre>";
+}

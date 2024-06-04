@@ -48,7 +48,7 @@ function getInformationsFromPosts()
 
 function displayPosts()
 {
-    //include "./scripts.php";
+    include "./scripts.php";
     $lesInformations = getInformationsFromPosts();
     // $post = $lesInformations->fetch_assoc();
     // echo "<pre>" . print_r($lesInformations, 1) . "</pre>";
@@ -74,6 +74,7 @@ function displayPosts()
         $finalStringDate = "$dayNumber $monthName $year à $hour" . "h" . "$minute";
         // == END of Date
         $authorId = $post["id"];
+        detectTags($post["content"]);
 ?>
         <article>
             <h3>
