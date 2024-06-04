@@ -6,6 +6,7 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 if (!isset($_SESSION["connected_id"])) {
     header('Location: ./login.php');
+    exit();
 } else {
     $sessionId = $_SESSION["connected_id"];
 }
