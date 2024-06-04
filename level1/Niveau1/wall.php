@@ -227,58 +227,45 @@ echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
                     </div>
                     <footer>
                         <small>♥ <?php echo $post['like_number'] ?></small>
-                        <?php 
-                        $esketulike = "SELECT user_id FROM likes 
-                                    WHERE post_id='$post[id]' AND user_id='$sessionId';";
-
-                        $lareponse = $mysqli->query($esketulike);
-                        $like = $lareponse->fetch_assoc();
+                        <?php
                         $messageid = $post['id'];
-                        echo "<pre>" . print_r($like, 1) . "</pre>";
-                        $liker = $_SESSION['connected_id'];
-                        $addedlike = $_POST;
-                        if(!$lareponse) {
+                        echo "<pre>" . print_r($messageid, 1) . "</pre>";
 
-                            
-
-                            ?>
-                            <form action="" method="post">
-                                <input type="hidden" name="unlike" value="true">
-                                <button type="submit" id="unlikebutton" class="unlike">Unlike</button>
-                            </form>
-                                <?php
-                                //echo "<pre>" . print_r($_POST, 1) . "</pre>";
-                                $larequeteSQL = "DELETE INTO likes "
-                                . "(id, user_id, post_id) "
-                                ."VALUES (likes.id, 
-                                ". $liker. ", "
-                                . "'" . $post['id'] . "');";
-                               // echo $lInstructionSql;
-                               $lasuppression = $mysqli->query($larequeteSQL);
-                                
-                        }else {
-                            ?>
-
-                            </form><form action="" method="post">
-                                <input type="hidden" name="like" value="true">
-                                <button type="submit" id="likebutton" class="like">Like</button>
-                            </form>
-                            <?php
-                            echo "<pre>" . print_r($_POST, 1) . "</pre>";
-                            $lInstructionSql = "INSERT INTO likes "
-                                . "(id, user_id, post_id) "
-                                . "VALUES (NULL, "
-                                . $liker . ", "
-                                . "'" . $post['id'] . "');";
-
-                                $lajout = $mysqli->query($lInstructionSql);
+                        if (isset($_POST['like' . $messageid])) {
+                            // Ajouter un like
+                            $ajoutLikeSql = "INSERT INTO likes (id, user_id, post_id) VALUES (NULL, $sessionId, $messageid)";
+                            if (!$mysqli->query($ajoutLikeSql)) {
+                                echo "Erreur lors de l'ajout du like: " . $mysqli->error;
+                            }
+                        } elseif (isset($_POST['unlike' . $messageid])) {
+                            // Supprimer un like
+                            $suppressionLikeSql = "DELETE FROM likes WHERE user_id = $sessionId AND post_id = $messageid";
+                            if (!$mysqli->query($suppressionLikeSql)) {
+                                echo "Erreur lors de la suppression du like: " . $mysqli->error;
+                            }
                         }
 
+                        // Vérifier si l'utilisateur a liké le post
+                        $esketulike = "SELECT * FROM likes WHERE post_id='$post[id]' AND user_id='$sessionId';";
+                        $likes = $mysqli->query($esketulike);
+                        echo "<pre>" . print_r($likes, 1) . "</pre>";
 
+                        if ($likes->num_rows == 0) {
                         ?>
-                        
-
+                            <form method="post" action="">
+                                <input type="hidden" name="like<?php echo $messageid ?>" value="true">
+                                <button type="submit" id="likeButton" class="like">Like</button>
+                            </form>
                         <?php
+                        } else {
+                        ?>
+                            <form method="post" action="">
+                                <input type="hidden" name="unlike<?php echo $messageid ?>" value="true">
+                                <button type="submit" id="likeButton" class="unlike">Unlike</button>
+                            </form>
+                        <?php
+
+                        }
 
 
                         $newtagidlist = explode(",", $post['tagidlist']);
