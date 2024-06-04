@@ -35,11 +35,67 @@ function displayTags($string)
     }
 }
 
-function detectTags($string)
+function detectTags($thePostContent, $thePostId)
 {
-    $newString = explode("'", $string);
+    include "./sqlConnection.php";
+
+    // ==== Delete les " ' "
+    $newString = explode("'", $thePostContent);
     $stringAgain = implode(" ", $newString);
 
+    // ==== Delete les " , "
+    $newString = explode(",", $stringAgain);
+    $stringAgain = implode(" ", $newString);
 
-    echo "<pre>" . print_r($stringAgain, 1) . "</pre>";
+    $newString = explode(" ", $stringAgain);
+
+    // === Array qui va contenir les mots avec #
+    foreach ($newString as $word) {
+        if (str_contains($word, "#")) {
+            $word = explode("#", $word);
+            $word = implode("", $word);
+            $word = trim($word);
+            // array_push($tagListFromPost, $word);
+
+            $queryTagId = "
+            SELECT id FROM tags WHERE tags.label='$word';
+            ";
+            $tagRequest = $mysqli->query($queryTagId);
+            if ($tagRequest->num_rows == 0) {
+
+                $updateTag = "
+                INSERT INTO tags(id,label) VALUES(NULL,'$word');
+                ";
+                $ok = $mysqli->query($updateTag);
+                if (!$ok) {
+                    echo "Impossible d'ajouter le TAG";
+                } else {
+                    echo "TAG updated";
+                }
+            }
+
+            $queryString = "
+            INSERT INTO posts_tags(post_id, tag_id)
+            VALUES ('$thePostId',(SELECT id FROM tags WHERE tags.label='$word'));
+            ";
+
+            $ok = $mysqli->query($queryString);
+            if (!$ok) {
+                echo "Impossible d'ajouter le message: " . $mysqli->error;
+            } else {
+                echo "DB updated";
+            }
+
+            echo "<pre>" . print_r($word, 1) . "</pre>";
+        }
+    }
+    // === Join l'array avec des "," et supression des "#"
+    // $tagListString = implode(",", $tagListFromPost);
+    // $tagListString = explode("#", $tagListString);
+    // $tagListString = implode("", $tagListString);
+
+    // echo "<pre>" . print_r($tagListString, 1) . "</pre>";
+    // echo "<pre>" . print_r($stringAgain, 1) . "</pre>";
+    // echo "<pre>" . print_r($newString, 1) . "</pre>";
+    // return $tagListString;
 }

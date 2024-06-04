@@ -136,14 +136,17 @@ if (!isset($_SESSION["connected_id"])) {
                             for ($i = 0; $i < count($newtagidlist); $i++) {
 
                         ?>
-                                <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>"><?php
-                                                                                            echo '#' . $newtaglist[$i]  ?></a><?php
-                                                                                                                            }
-                                                                                                                        } elseif (strlen($newtagidlist[0]) == 1) {
-                                                                                                                                ?>
-                            <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a><?php
-                                                                                                                            }
-                                                                                                                                ?>
+                                <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">
+                                    <?php
+                                    echo '#' . $newtaglist[$i]  ?></a>
+                            <?php
+                            }
+                        } elseif (strlen($newtagidlist[0]) >= 1) {
+                            ?>
+                            <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a>
+                        <?php
+                        }
+                        ?>
                     </footer>
                 </article>
             <?php

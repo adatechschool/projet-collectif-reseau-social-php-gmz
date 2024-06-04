@@ -48,7 +48,7 @@ function getInformationsFromPosts()
 
 function displayPosts()
 {
-    include "./scripts.php";
+    // include "./scripts.php";
     $lesInformations = getInformationsFromPosts();
     // $post = $lesInformations->fetch_assoc();
     // echo "<pre>" . print_r($lesInformations, 1) . "</pre>";
@@ -74,7 +74,8 @@ function displayPosts()
         $finalStringDate = "$dayNumber $monthName $year à $hour" . "h" . "$minute";
         // == END of Date
         $authorId = $post["id"];
-        detectTags($post["content"]);
+
+        // detectTags($post["content"]);
 ?>
         <article>
             <h3>
@@ -95,15 +96,18 @@ function displayPosts()
                 if (count($newtagidlist) > 1) {
                     for ($i = 0; $i < count($newtagidlist); $i++) {
                 ?>
-                        <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>"><?php
-                                                                                    // $hashtag = str_replace(',', ', #', $newtaglist[$i]);
-                                                                                    echo '#' . $newtaglist[$i]  ?></a><?php
-                                                                                                                    }
-                                                                                                                } elseif (strlen($newtagidlist[0]) == 1) {
-                                                                                                                        ?>
-                    <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a><?php
-                                                                                                                    }
-                                                                                                                        ?>
+                        <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">
+                            <?php
+                            // $hashtag = str_replace(',', ', #', $newtaglist[$i]);
+                            echo '#' . $newtaglist[$i]  ?></a>
+                    <?php
+                    }
+                } elseif (strlen($newtagidlist[0]) >= 1) {
+                    ?>
+                    <a href="./tags.php?tag_id=<?php echo $newtagidlist[0] ?>"><?php echo '#' . $newtaglist[0] ?></a>
+                <?php
+                }
+                ?>
             </footer>
         </article>
 
