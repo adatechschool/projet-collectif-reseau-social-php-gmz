@@ -41,19 +41,14 @@ if (!isset($_SESSION["connected_id"])) {
     </header>
     <div id="wrapper">
         <?php
-        /**
-         * Etape 1: Le mur concerne un utilisateur en particulier
-         * La première étape est donc de trouver quel est l'id de l'utilisateur
-         * Celui ci est indiqué en parametre GET de la page sous la forme user_id=...
-         * Documentation : https://www.php.net/manual/fr/reserved.variables.get.php
-         * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
-         */
+        // Connexion à la base de données
+        include './sqlConnection.php';
+
+        // Récupérer l'ID de l'utilisateur dont le mur est affiché
         $userId = intval($_GET['user_id']);
         if (!$userId && $sessionId) {
             Header("Location: ./wall.php?user_id=$sessionId");
         }
-        ?>
-        <?php
         /**
          * Etape 2: se connecter à la base de donnée
          */
@@ -62,16 +57,6 @@ if (!isset($_SESSION["connected_id"])) {
         ?>
 
         <aside>
-            <?php
-            /**
-             * Etape 3: récupérer le nom de l'utilisateur
-             */
-            $laQuestionEnSql = "SELECT users.alias FROM users WHERE id= '$userId' ";
-            $lesInformations = $mysqli->query($laQuestionEnSql);
-            $user = $lesInformations->fetch_assoc();
-            //@todo: afficher le résultat de la ligne ci dessous, remplacer XXX par l'alias et effacer la ligne ci-dessous
-            // echo "<pre>" . print_r($user, 1) . "</pre>";
-            ?>
             <img src="user.jpg" alt="Portrait de l'utilisatrice" />
             <section>
                 <h3>Présentation</h3>
@@ -83,21 +68,59 @@ if (!isset($_SESSION["connected_id"])) {
 
             <?php
 
-            if ($userId == $sessionId) {
-            ?>
+            if ($userId != $sessionId) {
+                if (isset($_POST['subscribe'])) {
+                    // Ajouter un abonnement
+                    $ajoutFollowersSql = "INSERT INTO followers (id, followed_user_id, following_user_id) 
+                                            VALUES (NULL, $userId, '$sessionId')";
+                    if (!$mysqli->query($ajoutFollowersSql)) {
+                        echo "Erreur lors de l'ajout de l'abonnement: " . $mysqli->error;
+                    }
+                } elseif (isset($_POST['unsubscribe'])) {
+                    // Supprimer un abonnement
+                    $suppressionFollowersSql = "DELETE FROM followers 
+                                                WHERE followed_user_id = $userId 
+                                                AND following_user_id = $sessionId";
+                    if (!$mysqli->query($suppressionFollowersSql)) {
+                        echo "Erreur lors de la suppression de l'abonnement: " . $mysqli->error;
+                    }
+                }
 
+                // Vérifier si l'utilisateur est abonné
+                $subscriptionsQuestion = "
+                    SELECT users.*
+                    FROM followers 
+                    LEFT JOIN users ON users.id=followers.followed_user_id 
+                    WHERE followers.following_user_id='$sessionId'
+                    AND followers.followed_user_id='$userId'
+                ";
+                $InfoSubscriptions = $mysqli->query($subscriptionsQuestion);
+
+                if ($InfoSubscriptions->num_rows == 0) {
+            ?>
+                    <form method="post" action="">
+                        <input type="hidden" name="subscribe" value="true">
+                        <button type="submit" id="subscribeButton" class="subscribe">S'abonner</button>
+                    </form>
+                <?php
+                } else {
+                ?>
+                    <form method="post" action="">
+                        <input type="hidden" name="unsubscribe" value="true">
+                        <button type="submit" id="subscribeButton" class="unsubscribe">Se désabonner</button>
+                    </form>
+                <?php
+
+                }
+            }
+
+            if ($userId == $sessionId) {
+                ?>
                 <!-- Formulaire pour écrire un message sur son propre mur -->
                 <article>
                     <h2>Poster un message</h2>
+
                     <?php
-
-
-                    /**
-                     * BD
-                     */
-                    include './sqlConnection.php';
-                    // $mysqli = new mysqli("localhost", "root", "root", "socialnetwork_tests");
-
 
                     /**
                      * Récupération de la liste des auteurs
@@ -115,7 +138,7 @@ if (!isset($_SESSION["connected_id"])) {
                      */
                     // Etape 1 : vérifier si on est en train d'afficher ou de traiter le formulaire
                     // si on recoit un champs auteur rempli il y a une chance que ce soit un traitement
-                    $enCoursDeTraitement = isset($_POST['auteur']);
+                    $enCoursDeTraitement = isset($_POST['message']);
                     if ($enCoursDeTraitement) {
                         // on ne fait ce qui suit que si un formulaire a été soumis.
 
@@ -128,8 +151,8 @@ if (!isset($_SESSION["connected_id"])) {
                         // ==== Changement de author_id par l'ID de la SESSION en cours 
                         // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
                         // $authorId = $_POST['auteur'];
+                        $_SESSION['connected_id'] = 5;
                         $authorId = $_SESSION['connected_id'];
-                        // $_SESSION['connected_id'] = 5;
                         $postContent = $_POST['message'];
 
 
@@ -162,42 +185,24 @@ if (!isset($_SESSION["connected_id"])) {
                     <form action="wall.php?user_id=<?php echo $_SESSION['connected_id']; ?>" method="post">
                         <input type='hidden'>
                         <dl>
-                            <dt><label for='auteur'>Auteur</label></dt>
-                            <dd><select name='auteur'>
-                                    <?php
-                                    foreach ($listAuteurs as $id => $alias)
-                                        echo "<option value='$id'>$alias</option>";
-                                    ?>
-                                </select></dd>
                             <dt><label for='message'>Message</label></dt>
                             <dd><textarea name='message'></textarea></dd>
                         </dl>
                         <input type='submit'>
                     </form>
-                </article>
 
-            <?php } else {
 
-                // ==== Si on est PAS abonné =>
-
-                echo "<pre>" . print_r("abonne toi", 1) . "</pre>";
-                // ==== Faire un bouton pour s'abonner 
-                // => Doit faire un post en DB
-
-                // ==== Si on EST abonné =>
-                // == Faire un bouton pour se désabonné
-                // => Doit faire un put en DB ?
+                <?php
 
             }
-
-
-            ?>
-
-
-
+                ?>
+                </article>
         </aside>
+
         <main>
+
             <?php
+
             /**
              * Etape 3: récupérer tous les messages de l'utilisatrice
              */
@@ -242,8 +247,8 @@ if (!isset($_SESSION["connected_id"])) {
                         <?php
 
 
-                        $newtagidlist = explode(",", $post['tagidlist']);
-                        $newtaglist = explode(",", $post['taglist']);
+                        $newtagidlist = explode(",", $post['tagidlist'] ?? '');
+                        $newtaglist = explode(",", $post['taglist'] ?? '');
 
 
                         if (count($newtagidlist) > 1) {
