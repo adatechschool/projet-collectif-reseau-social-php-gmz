@@ -6,7 +6,7 @@ if (!isset($_SESSION["connected_id"])) {
     exit();
 } else {
     $sessionId = $_SESSION["connected_id"];
-    if ($sessionId != 5/* ID DE L ADMIN*/) {
+    if ($sessionId != 8/* ID DE L ADMIN*/) {
         header('Location: ./wall.php');
     }
 }

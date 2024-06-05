@@ -152,7 +152,7 @@ if (!isset($_SESSION["connected_id"])) {
 
                         // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                         // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
-                        
+
                         // et complétez le code ci dessous en remplaçant les ???
 
                         // ==== Changement de author_id par l'ID de la SESSION en cours 
@@ -189,7 +189,7 @@ if (!isset($_SESSION["connected_id"])) {
                         }
 
                         // ==== Appel function pour POST la relation tag et post id
-                        include("./scripts.php");
+                        // include("./scripts.php");
                         $queryIdFromPost = "
                         SELECT id FROM posts WHERE posts.content= '$postContent'
                         ";
@@ -275,11 +275,11 @@ if (!isset($_SESSION["connected_id"])) {
                         } elseif (isset($_POST['like' . $messageid])) {
                             $post['like_number'] = $post['like_number'] + 1;
                         }
-                        ?>  
+                        ?>
 
                         <small>♥ <?php echo $post['like_number'] ?></small>
                         <?php
-                        
+
 
                         if (isset($_POST['like' . $messageid])) {
                             // Ajouter un like
@@ -298,7 +298,7 @@ if (!isset($_SESSION["connected_id"])) {
                         // Vérifier si l'utilisateur a liké le post
                         $esketulike = "SELECT * FROM likes WHERE post_id='$post[id]' AND user_id='$sessionId';";
                         $likes = $mysqli->query($esketulike);
-                       
+
 
                         if ($likes->num_rows == 0) {
                         ?>
