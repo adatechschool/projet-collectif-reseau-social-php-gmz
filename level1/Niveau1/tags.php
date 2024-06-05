@@ -2,7 +2,6 @@
 include "./tags-script.php";
 
 session_start();
-echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 if (!isset($_SESSION["connected_id"])) {
     header('Location: ./login.php');

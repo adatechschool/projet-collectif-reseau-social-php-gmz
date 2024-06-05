@@ -107,7 +107,7 @@ if (isset($_SESSION["connected_id"])) {
             while ($post = $lesInformations->fetch_assoc()) {
                 //la ligne ci-dessous doit etre supprimée mais regardez ce 
                 //qu'elle affiche avant pour comprendre comment sont organisées les information dans votre 
-                // echo "<pre>" . print_r($post, 1) . "</pre>";
+                
 
                 // @todo : Votre mission c'est de remplacer les AREMPLACER par les bonnes valeurs
                 // ci-dessous par les bonnes valeurs cachées dans la variable $post 
@@ -122,8 +122,6 @@ if (isset($_SESSION["connected_id"])) {
                 <article>
                     <h3>
                         <time><?php echo $dateFr ?></time>
-
-                        <!-- <time><?php echo $post['created'] ?></time> -->
                     </h3>
                     <address><a href="./wall.php?user_id=<?php echo $authorId ?>"><?php echo $post['author_name'] ?></a></address>
                     <div>
@@ -151,8 +149,6 @@ if (isset($_SESSION["connected_id"])) {
 
                         <small>♥ <?php echo $post['like_number'] ?></small>
                         <?php
-                        echo "<pre>" . print_r($messageid, 1) . "</pre>";
-
                         if (isset($_POST['like' . $messageid])) {
                             // Ajouter un like
                             $ajoutLikeSql = "INSERT INTO likes (id, user_id, post_id) VALUES (NULL, $sessionId, $messageid)";
@@ -170,7 +166,6 @@ if (isset($_SESSION["connected_id"])) {
                         // Vérifier si l'utilisateur a liké le post
                         $esketulike = "SELECT * FROM likes WHERE post_id='$messageid' AND user_id='$sessionId';";
                         $likes = $mysqli->query($esketulike);
-                        echo "<pre>" . print_r($likes, 1) . "</pre>";
 
                         if ($likes->num_rows == 0) {
                         ?>

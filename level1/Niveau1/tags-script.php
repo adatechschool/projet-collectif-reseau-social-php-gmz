@@ -95,7 +95,7 @@ function displayPosts()
 
                 <small>♥ <?php echo $post['like_number'] ?></small>
                 <?php
-                echo "<pre>" . print_r($messageid, 1) . "</pre>";
+        
 
                 if (isset($_POST['like' . $messageid])) {
                     // Ajouter un like
@@ -114,7 +114,6 @@ function displayPosts()
                 // Vérifier si l'utilisateur a liké le post
                 $esketulike = "SELECT * FROM likes WHERE post_id='$messageid' AND user_id='$sessionId';";
                 $likes = $mysqli->query($esketulike);
-                echo "<pre>" . print_r($likes, 1) . "</pre>";
 
                 if ($likes->num_rows == 0) {
                 ?>

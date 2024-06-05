@@ -56,8 +56,6 @@ function detectTags($thePostContent, $thePostId)
             } else {
                 echo "DB updated";
             }
-
-            echo "<pre>" . print_r($word, 1) . "</pre>";
         }
     }
 }
@@ -73,7 +71,7 @@ function createDate($timePost)
 
     // // Convertir la chaîne de caractères en objet DateTime
     $timeObj = DateTime::createFromFormat('Y-m-d H:i:s', $timePost);
-    echo "<pre>" . print_r($timeObj, 1) . "</pre>";
+
     $dayNumber = $timeObj->format('d');
     $monthName = $moisFr[(int)$timeObj->format('m')];
     $year = $timeObj->format('Y');

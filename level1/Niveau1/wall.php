@@ -1,8 +1,5 @@
 <?php
 session_start();
-// $_SESSION["connected_id"] = 5;
-// unset($_SESSION["connected_id"]);
-echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 include("./scripts.php");
 
@@ -155,7 +152,7 @@ if (!isset($_SESSION["connected_id"])) {
 
                         // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                         // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
-                        echo "<pre>" . print_r($_POST, 1) . "</pre>";
+                        
                         // et complétez le code ci dessous en remplaçant les ???
 
                         // ==== Changement de author_id par l'ID de la SESSION en cours 
@@ -282,7 +279,7 @@ if (!isset($_SESSION["connected_id"])) {
 
                         <small>♥ <?php echo $post['like_number'] ?></small>
                         <?php
-                        echo "<pre>" . print_r($messageid, 1) . "</pre>";
+                        
 
                         if (isset($_POST['like' . $messageid])) {
                             // Ajouter un like
@@ -301,7 +298,7 @@ if (!isset($_SESSION["connected_id"])) {
                         // Vérifier si l'utilisateur a liké le post
                         $esketulike = "SELECT * FROM likes WHERE post_id='$post[id]' AND user_id='$sessionId';";
                         $likes = $mysqli->query($esketulike);
-                        echo "<pre>" . print_r($likes, 1) . "</pre>";
+                       
 
                         if ($likes->num_rows == 0) {
                         ?>

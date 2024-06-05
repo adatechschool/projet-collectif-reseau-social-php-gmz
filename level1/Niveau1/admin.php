@@ -1,8 +1,5 @@
 <?php
 session_start();
-// $_SESSION["connected_id"] = 5;
-// unset($_SESSION["connected_id"]);
-echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
 if (!isset($_SESSION["connected_id"])) {
     header('Location: ./login.php');
