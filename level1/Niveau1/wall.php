@@ -146,62 +146,68 @@ if (!isset($_SESSION["connected_id"])) {
                     // Etape 1 : vérifier si on est en train d'afficher ou de traiter le formulaire
                     // si on recoit un champs auteur rempli il y a une chance que ce soit un traitement
                     $enCoursDeTraitement = isset($_POST['message']);
+
+
                     if ($enCoursDeTraitement) {
-                        // on ne fait ce qui suit que si un formulaire a été soumis.
+                        if (strlen($_POST['message']) != 0) {
+                            // on ne fait ce qui suit que si un formulaire a été soumis.
 
 
-                        // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
-                        // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
+                            // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
+                            // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
 
-                        // et complétez le code ci dessous en remplaçant les ???
+                            // et complétez le code ci dessous en remplaçant les ???
 
-                        // ==== Changement de author_id par l'ID de la SESSION en cours 
-                        // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
-                        // $authorId = $_POST['auteur'];
-                        $authorId = $_SESSION['connected_id'];
-                        $postContent = $_POST['message'];
-
-
-
-                        //Etape 3 : Petite sécurité
-                        // pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
-                        $authorId = intval($mysqli->real_escape_string($authorId));
-                        $postContent = $mysqli->real_escape_string($postContent);
+                            // ==== Changement de author_id par l'ID de la SESSION en cours 
+                            // => La table 'posts' attribue bien le message à l'utilisateur de la SESSION
+                            // $authorId = $_POST['auteur'];
+                            $authorId = $_SESSION['connected_id'];
+                            $postContent = $_POST['message'];
 
 
-                        //Etape 4 : construction de la requete
-                        $lInstructionSql = "INSERT INTO posts "
-                            . "(id, user_id, content, created) "
-                            . "VALUES (NULL, "
-                            . $authorId . ", "
-                            . "'" . $postContent . "', "
-                            . "NOW()
+
+
+
+                            //Etape 3 : Petite sécurité
+                            // pour éviter les injection sql : https://www.w3schools.com/sql/sql_injection.asp
+                            $authorId = intval($mysqli->real_escape_string($authorId));
+                            $postContent = $mysqli->real_escape_string($postContent);
+
+
+                            //Etape 4 : construction de la requete
+                            $lInstructionSql = "INSERT INTO posts "
+                                . "(id, user_id, content, created) "
+                                . "VALUES (NULL, "
+                                . $authorId . ", "
+                                . "'" . $postContent . "', "
+                                . "NOW()
                             );";
-                        // echo $lInstructionSql;
+                            // echo $lInstructionSql;
 
 
-                        // Etape 5 : execution
-                        $ok = $mysqli->query($lInstructionSql);
-                        if (!$ok) {
-                            echo "Impossible d'ajouter le message: " . $mysqli->error;
-                        } else {
-                            echo "Message posté en tant que :" . $listAuteurs[$authorId];
-                        }
+                            // Etape 5 : execution
+                            $ok = $mysqli->query($lInstructionSql);
+                            if (!$ok) {
+                                echo "Impossible d'ajouter le message: " . $mysqli->error;
+                            } else {
+                                echo "Message posté en tant que :" . $listAuteurs[$authorId];
+                            }
 
-                        // ==== Appel function pour POST la relation tag et post id
-                        // include("./scripts.php");
-                        $queryIdFromPost = "
+                            // ==== Appel function pour POST la relation tag et post id
+                            // include("./scripts.php");
+                            $queryIdFromPost = "
                         SELECT id FROM posts WHERE posts.content= '$postContent'
                         ";
-                        $status = $mysqli->query($queryIdFromPost);
-                        $response = $status->fetch_assoc();
-                        $idFromPost = $response["id"];
+                            $status = $mysqli->query($queryIdFromPost);
+                            $response = $status->fetch_assoc();
+                            $idFromPost = $response["id"];
 
-                        // echo "<pre>" . print_r($idFromPost, 1) . "</pre>";
+                            // echo "<pre>" . print_r($idFromPost, 1) . "</pre>";
 
-                        // === Function qui scan le contenu et met à jour la DB tags
-                        // == Avec relation posts_tags
-                        detectTags($postContent, $idFromPost);
+                            // === Function qui scan le contenu et met à jour la DB tags
+                            // == Avec relation posts_tags
+                            detectTags($postContent, $idFromPost);
+                        }
                     }
                     ?>
                     <form action="wall.php?user_id=<?php echo $_SESSION['connected_id']; ?>" method="post">
