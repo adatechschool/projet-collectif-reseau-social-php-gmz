@@ -4,6 +4,7 @@
    $requestPostsFromTag = "
     SELECT posts.content,
                     posts.created,
+                    posts.id as message_id,
                     users.id,
                     users.alias as author_name,  
                     count(likes.id) as like_number,  

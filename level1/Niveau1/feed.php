@@ -92,6 +92,7 @@ if (!isset($_SESSION["connected_id"])) {
             $laQuestionEnSql = "
                     SELECT posts.content,
                     posts.created,
+                    posts.id as message_id,
                     users.id,
                     users.alias as author_name,  
                     count(likes.id) as like_number,  
@@ -128,11 +129,62 @@ if (!isset($_SESSION["connected_id"])) {
                         <p><?php echo $feed['content'] ?></p>
                     </div>
                     <footer>
+                    <?php
+                        $messageid = $feed['message_id'];
+                        $newtagidlist = explode(",", $feed['tagidlist'] ?? '');
+                        $newtaglist = explode(",", $feed['taglist'] ?? '');
+
+                        $divide =  count($newtagidlist);
+                        if (count($newtagidlist)==0){
+                            $divide =1;
+                        }
+                        $feed['like_number'] = intval($feed['like_number']) / $divide;
+
+                        if (isset($_POST['unlike' . $messageid])) {
+                            $feed['like_number'] = $feed['like_number'] - 1;
+                        } elseif (isset($_POST['like' . $messageid])) {
+                            $feed['like_number'] = $feed['like_number'] + 1;
+                        }
+                        ?>
+
                         <small>♥ <?php echo $feed['like_number'] ?></small>
                         <?php
-                        $newtagidlist = explode(",", $feed['tagidlist']);
-                        $newtaglist = explode(",", $feed['taglist']);
+                        echo "<pre>" . print_r($messageid, 1) . "</pre>";
 
+                        if (isset($_POST['like' . $messageid])) {
+                            // Ajouter un like
+                            $ajoutLikeSql = "INSERT INTO likes (id, user_id, post_id) VALUES (NULL, $sessionId, $messageid)";
+                            if (!$mysqli->query($ajoutLikeSql)) {
+                                echo "Erreur lors de l'ajout du like: " . $mysqli->error;
+                            }
+                        } elseif (isset($_POST['unlike' . $messageid])) {
+                            // Supprimer un like
+                            $suppressionLikeSql = "DELETE FROM likes WHERE user_id = $sessionId AND post_id = $messageid";
+                            if (!$mysqli->query($suppressionLikeSql)) {
+                                echo "Erreur lors de la suppression du like: " . $mysqli->error;
+                            }
+                        }
+
+                        // Vérifier si l'utilisateur a liké le post
+                        $esketulike = "SELECT * FROM likes WHERE post_id='$messageid' AND user_id='$sessionId';";
+                        $likes = $mysqli->query($esketulike);
+                        echo "<pre>" . print_r($likes, 1) . "</pre>";
+
+                        if ($likes->num_rows == 0) {
+                        ?>
+                            <form method="post" action="">
+                                <input type="hidden" name="like<?php echo $messageid ?>" value="true">
+                                <button type="submit" id="likeButton" class="like">Like</button>
+                            </form>
+                        <?php
+                        } else {
+                        ?>
+                            <form method="post" action="">
+                                <input type="hidden" name="unlike<?php echo $messageid ?>" value="true">
+                                <button type="submit" id="likeButton" class="unlike">Unlike</button>
+                            </form>
+                            <?php
+                        }
 
                         if (count($newtagidlist) > 1) {
                             for ($i = 0; $i < count($newtagidlist); $i++) {
