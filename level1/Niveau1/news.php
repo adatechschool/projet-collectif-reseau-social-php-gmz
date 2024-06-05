@@ -41,6 +41,7 @@
 
 
             <?php
+            include './scripts.php';
             /*
                   // C'est ici que le travail PHP commence
                   // Votre mission si vous l'acceptez est de chercher dans la base
@@ -106,11 +107,14 @@
                 // avec le ? > ci-dessous on sort du mode php et on écrit du html comme on veut... mais en restant dans la boucle
                 $authorId = $post["id"];
 
-                // include './scripts.php';
+                $dateFr = createDate($post['created'])
+
             ?>
                 <article>
                     <h3>
-                        <time><?php echo $post['created'] ?></time>
+                        <time><?php echo $dateFr ?></time>
+
+                        <!-- <time><?php echo $post['created'] ?></time> -->
                     </h3>
                     <address><a href="./wall.php?user_id=<?php echo $authorId ?>"><?php echo $post['author_name'] ?></a></address>
                     <div>

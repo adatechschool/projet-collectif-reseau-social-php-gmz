@@ -86,6 +86,7 @@ if (!isset($_SESSION["connected_id"])) {
         </aside>
         <main>
             <?php
+            include './scripts.php';
             /**
              * Etape 3: récupérer tous les messages des abonnements
              */
@@ -118,10 +119,11 @@ if (!isset($_SESSION["connected_id"])) {
                  * A vous de retrouver comment faire la boucle while de parcours...
                  */
                 $authorId = $feed["id"];
+                $dateFr = createDate($feed['created'])
             ?>
                 <article>
                     <h3>
-                        <time><?php echo $feed['created'] ?></time>
+                        <time><?php echo $dateFr ?></time>
                     </h3>
                     <address>par <a href="./wall.php?user_id=<?php echo $authorId ?>"><?php echo $feed['author_name'] ?></a></address>
                     <div>
