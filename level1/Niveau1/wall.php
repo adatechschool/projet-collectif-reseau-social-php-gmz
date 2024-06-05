@@ -266,9 +266,22 @@ if (!isset($_SESSION["connected_id"])) {
                         <p><?php echo $post['content'] ?></p>
                     </div>
                     <footer>
-                        <small>♥ <?php echo $post['like_number'] ?></small>
+
                         <?php
                         $messageid = $post['id'];
+                        $newtagidlist = explode(",", $post['tagidlist'] ?? '');
+                        $newtaglist = explode(",", $post['taglist'] ?? '');
+                        $post['like_number'] = intval($post['like_number']) / count($newtagidlist);
+
+                        if (isset($_POST['unlike' . $messageid])) {
+                            $post['like_number'] = $post['like_number'] - 1;
+                        } elseif (isset($_POST['like' . $messageid])) {
+                            $post['like_number'] = $post['like_number'] + 1;
+                        }
+                        ?>  
+
+                        <small>♥ <?php echo $post['like_number'] ?></small>
+                        <?php
                         echo "<pre>" . print_r($messageid, 1) . "</pre>";
 
                         if (isset($_POST['like' . $messageid])) {
@@ -305,8 +318,8 @@ if (!isset($_SESSION["connected_id"])) {
                             </form>
                             <?php
                         }
-                        $newtagidlist = explode(",", $post['tagidlist'] ?? '');
-                        $newtaglist = explode(",", $post['taglist'] ?? '');
+                        // $newtagidlist = explode(",", $post['tagidlist'] ?? '');
+                        // $newtaglist = explode(",", $post['taglist'] ?? '');
 
                         // echo "<pre>" . print_r($newtagidlist, 1) . "</pre>";
                         // echo "<pre>" . print_r($newtaglist, 1) . "</pre>";
