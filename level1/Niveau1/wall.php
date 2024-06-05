@@ -4,6 +4,8 @@ session_start();
 // unset($_SESSION["connected_id"]);
 echo "<pre>" . print_r($_SESSION, 1) . "</pre>";
 
+include("./scripts.php");
+
 if (!isset($_SESSION["connected_id"])) {
     header('Location: ./login.php');
     exit();
@@ -40,6 +42,7 @@ if (!isset($_SESSION["connected_id"])) {
 
         </nav>
     </header>
+
     <div id="wrapper">
         <?php
         // Connexion à la base de données
@@ -224,7 +227,7 @@ if (!isset($_SESSION["connected_id"])) {
         <main>
 
             <?php
-
+            // include './scripts.php';
             /**
              * Etape 3: récupérer tous les messages de l'utilisatrice (+ ajout de posts.id)
              */
@@ -251,11 +254,12 @@ if (!isset($_SESSION["connected_id"])) {
              * Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php
              */
             while ($post = $lesInformations->fetch_assoc()) {
-
+                $dateFr = createDate($post['created'])
             ?>
+
                 <article>
                     <h3>
-                        <time><?php echo $post['created'] ?></time>
+                        <time><?php echo $dateFr ?></time>
                     </h3>
                     <address><?php echo $post['author_name'] ?></address>
                     <div>
@@ -299,7 +303,7 @@ if (!isset($_SESSION["connected_id"])) {
                                 <input type="hidden" name="unlike<?php echo $messageid ?>" value="true">
                                 <button type="submit" id="likeButton" class="unlike">Unlike</button>
                             </form>
-                        <?php
+                            <?php
                         }
                         $newtagidlist = explode(",", $post['tagidlist'] ?? '');
                         $newtaglist = explode(",", $post['taglist'] ?? '');
@@ -309,7 +313,7 @@ if (!isset($_SESSION["connected_id"])) {
 
                         if (count($newtagidlist) > 1) {
                             for ($i = 0; $i < count($newtagidlist); $i++) {
-                        ?>
+                            ?>
                                 <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">
                                     <?php
                                     // $hashtag = str_replace(',', ', #', $newtaglist[$i]);

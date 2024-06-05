@@ -48,7 +48,8 @@ function getInformationsFromPosts()
 
 function displayPosts()
 {
-    // include "./scripts.php";
+    include "./scripts.php";
+
     $lesInformations = getInformationsFromPosts();
     // $post = $lesInformations->fetch_assoc();
     // echo "<pre>" . print_r($lesInformations, 1) . "</pre>";
@@ -56,29 +57,16 @@ function displayPosts()
     while ($post = $lesInformations->fetch_assoc()) {
 
         // ==== Get date and different element for the posts
-        $date = $post["created"];
-        // 2020-11-20 18:26:50
-        $dateParsed = date_parse_from_format("Y-m-d H:i:s", $date);
+        $dateFr = createDate($post['created']);
 
         // echo "<pre>" . print_r($dateParsed, 1) . "</pre>";
 
-        $monthNum = $dateParsed["month"];
-        $dateObj   = DateTime::createFromFormat('!m', $monthNum);
-        $monthName = $dateObj->format('F');
-        $dayNumber = $dateParsed["day"];
-        $year = $dateParsed["year"];
-        $hour = $dateParsed["hour"];
-        $minute = $dateParsed["minute"];
-        $second = $dateParsed["second"];
-
-        $finalStringDate = "$dayNumber $monthName $year à $hour" . "h" . "$minute";
-        // == END of Date
         $authorId = $post["id"];
 
 ?>
         <article>
             <h3>
-                <time datetime='2020-02-01 11:12:13'><?php echo $finalStringDate ?></time>
+                <time datetime='2020-02-01 11:12:13'><?php echo $dateFr ?></time>
             </h3>
             <address>par <a href="./wall.php?user_id=<?php echo $authorId ?>"><?php echo $post["author_name"] ?></a></address>
             <div>

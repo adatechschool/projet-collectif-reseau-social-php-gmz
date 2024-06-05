@@ -1,5 +1,6 @@
 <?php
 
+
 function detectTags($thePostContent, $thePostId)
 {
     include "./sqlConnection.php";
@@ -59,4 +60,27 @@ function detectTags($thePostContent, $thePostId)
             echo "<pre>" . print_r($word, 1) . "</pre>";
         }
     }
+}
+
+function createDate($timePost)
+{
+    // Tableau des mois en français
+    $moisFr = [
+        1 => 'janvier', 2 => 'février', 3 => 'mars', 4 => 'avril',
+        5 => 'mai', 6 => 'juin', 7 => 'juillet', 8 => 'août',
+        9 => 'septembre', 10 => 'octobre', 11 => 'novembre', 12 => 'décembre'
+    ];
+
+    // // Convertir la chaîne de caractères en objet DateTime
+    $timeObj = DateTime::createFromFormat('Y-m-d H:i:s', $timePost);
+    echo "<pre>" . print_r($timeObj, 1) . "</pre>";
+    $dayNumber = $timeObj->format('d');
+    $monthName = $moisFr[(int)$timeObj->format('m')];
+    $year = $timeObj->format('Y');
+    $hour = $timeObj->format('H');
+    $minute = $timeObj->format('i');
+    $second = $timeObj->format('s');
+
+    // // Formater la date en français
+    return "$dayNumber $monthName $year à $hour" . "h" . "$minute";
 }
