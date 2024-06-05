@@ -162,7 +162,7 @@ if (isset($_SESSION["connected_id"])) {
                                 echo "Erreur lors de la suppression du like: " . $mysqli->error;
                             }
                         }
-
+                    if (isset($_SESSION['connected_id'])) {
                         // Vérifier si l'utilisateur a liké le post
                         $esketulike = "SELECT * FROM likes WHERE post_id='$messageid' AND user_id='$sessionId';";
                         $likes = $mysqli->query($esketulike);
@@ -183,6 +183,7 @@ if (isset($_SESSION["connected_id"])) {
                             </form>
                             <?php
                         }
+                    } // Fermeture accolade session active
 
                         if (count($newtagidlist) > 1) {
                             for ($i = 0; $i < count($newtagidlist); $i++) {
