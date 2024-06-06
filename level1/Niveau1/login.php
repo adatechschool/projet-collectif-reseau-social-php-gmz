@@ -60,7 +60,6 @@ if (isset($_SESSION["connected_id"])) {
 
                     // Etape 2: récupérer ce qu'il y a dans le formulaire @todo: c'est là que votre travaille se situe
                     // observez le résultat de cette ligne de débug (vous l'effacerez ensuite)
-                    echo "<pre>" . print_r($_POST, 1) . "</pre>";
 
                     $emailAVerifier = $mysqli->real_escape_string($_POST['email']);
                     $passwdAVerifier = $mysqli->real_escape_string($_POST['motpasse']);
@@ -144,8 +143,7 @@ if (isset($_SESSION["connected_id"])) {
                         <dl>
                             <dt><label for='email2'>E-Mail</label></dt>
                             <dd><input type='email' name='email2'></dd>
-                            <dt><label for='newMotpasse'>Nouveau<br>mot de passe </label></dt>
-                            <br>
+                            <dt><label for='newMotpasse'>Nouveau mot de passe </label></dt>
                             <dd><input type='password' name='newMotpasse'></dd>
                         </dl>
                         <input type='submit' value='Mettre à jour le mot de passe'>
