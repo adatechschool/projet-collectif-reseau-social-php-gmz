@@ -1,4 +1,5 @@
 <?php
+/* GESTION DE SESSION */
 session_start();
 
 if (!isset($_SESSION["connected_id"])) {
@@ -8,6 +9,7 @@ if (!isset($_SESSION["connected_id"])) {
     $sessionId = $_SESSION["connected_id"];
 }
 ?>
+
 <!doctype html>
 <html lang="fr">
 
@@ -39,39 +41,27 @@ if (!isset($_SESSION["connected_id"])) {
     </header>
     <div id="wrapper">
         <?php
-        /**
-         * Cette page est TRES similaire à wall.php. 
-         * Vous avez sensiblement à y faire la meme chose.
-         * Il y a un seul point qui change c'est la requete sql.
-         */
-        /**
-         * Etape 1: Le mur concerne un utilisateur en particulier
-         */
+        /* GESTION DE LA PAGE FEED DE L'UTILISATRICE CONNECTEE */
         $userId = intval($_GET['user_id']);
         if ((!$userId || $userId != $sessionId)  && $sessionId) {
             Header("Location: ./feed.php?user_id=$sessionId");
             exit();
         }
         ?>
+
         <?php
-        /**
-         * Etape 2: se connecter à la base de donnée
-         */
-        //$mysqli = new mysqli("localhost", "root", "root", "socialnetwork");
+        /* CONNEXION A LA BASE DE DONNEES */
         include 'sqlConnection.php';
         ?>
 
         <aside>
             <?php
-            /**
-             * Etape 3: récupérer le nom de l'utilisateur
-             */
+            /* REQUETE SUR LES DONNEES DE L'UTILISATRICE */
             $laQuestionEnSql = "SELECT * FROM `users` WHERE id= '$userId' ";
             $lesInformations = $mysqli->query($laQuestionEnSql);
             $user = $lesInformations->fetch_assoc();
-            //@todo: afficher le résultat de la ligne ci dessous, remplacer XXX par l'alias et effacer la ligne ci-dessous
-            //echo "<pre>" . print_r($user, 1) . "</pre>";
             ?>
+
             <img src="user.jpg" alt="Portrait de l'utilisatrice" />
             <section>
                 <h3>Présentation</h3>
@@ -84,10 +74,9 @@ if (!isset($_SESSION["connected_id"])) {
         </aside>
         <main>
             <?php
+            /* APPEL DE LA FONCTION createDate() */
             include './scripts.php';
-            /**
-             * Etape 3: récupérer tous les messages des abonnements
-             */
+            /* REQUETE SUR LES MESSAGES DES PERSONNES SUIVIES PAR L'UTILISATRICE */
             $laQuestionEnSql = "
                     SELECT posts.content,
                     posts.created,
@@ -108,17 +97,15 @@ if (!isset($_SESSION["connected_id"])) {
                     ORDER BY posts.created DESC  
                     ";
             $lesInformations = $mysqli->query($laQuestionEnSql);
+            // -- Vérification  de la requete --
             if (!$lesInformations) {
                 echo ("Échec de la requete : " . $mysqli->error);
             }
+
+            /* AFFICHAGE DES MESSAGES */
             while ($feed = $lesInformations->fetch_assoc()) {
-                //echo "<pre>" . print_r($feed, 1) . "</pre>";
-                /**
-                 * Etape 4: @todo Parcourir les messsages et remplir correctement le HTML avec les bonnes valeurs php
-                 * A vous de retrouver comment faire la boucle while de parcours...
-                 */
                 $authorId = $feed["id"];
-                $dateFr = createDate($feed['created'])
+                $dateFr = createDate($feed['created']);
             ?>
                 <article>
                     <h3>
@@ -129,17 +116,17 @@ if (!isset($_SESSION["connected_id"])) {
                         <p><?php echo $feed['content'] ?></p>
                     </div>
                     <footer>
-                    <?php
+                        <?php
                         $messageid = $feed['message_id'];
                         $newtagidlist = explode(",", $feed['tagidlist'] ?? '');
                         $newtaglist = explode(",", $feed['taglist'] ?? '');
 
                         $divide =  count($newtagidlist);
-                        if (count($newtagidlist)==0){
-                            $divide =1;
+                        if (count($newtagidlist) == 0) {
+                            $divide = 1;
                         }
-                        $feed['like_number'] = intval($feed['like_number']) / $divide;
-
+                        $post['like_number'] = intval($feed['like_number']) / $divide;
+                        /* GESTION DES LIKES */
                         if (isset($_POST['unlike' . $messageid])) {
                             $feed['like_number'] = $feed['like_number'] - 1;
                         } elseif (isset($_POST['like' . $messageid])) {
@@ -151,20 +138,20 @@ if (!isset($_SESSION["connected_id"])) {
                         <?php
 
                         if (isset($_POST['like' . $messageid])) {
-                            // Ajouter un like
+                            //-- Ajouter un like --
                             $ajoutLikeSql = "INSERT INTO likes (id, user_id, post_id) VALUES (NULL, $sessionId, $messageid)";
                             if (!$mysqli->query($ajoutLikeSql)) {
                                 echo "Erreur lors de l'ajout du like: " . $mysqli->error;
                             }
                         } elseif (isset($_POST['unlike' . $messageid])) {
-                            // Supprimer un like
+                            //-- Supprimer un like --
                             $suppressionLikeSql = "DELETE FROM likes WHERE user_id = $sessionId AND post_id = $messageid";
                             if (!$mysqli->query($suppressionLikeSql)) {
                                 echo "Erreur lors de la suppression du like: " . $mysqli->error;
                             }
                         }
 
-                        // Vérifier si l'utilisateur a liké le post
+                        //-- Vérifier si l'utilisateur a liké le post --
                         $esketulike = "SELECT * FROM likes WHERE post_id='$messageid' AND user_id='$sessionId';";
                         $likes = $mysqli->query($esketulike);
 
@@ -183,11 +170,11 @@ if (!isset($_SESSION["connected_id"])) {
                             </form>
                             <?php
                         }
-
+                        /* AFFICHAGE DES MOTS CLES */
                         if (count($newtagidlist) > 1) {
                             for ($i = 0; $i < count($newtagidlist); $i++) {
 
-                        ?>
+                            ?>
                                 <a href="./tags.php?tag_id=<?php echo $newtagidlist[$i] ?>">
                                     <?php
                                     echo '#' . $newtaglist[$i]  ?></a>
@@ -201,11 +188,7 @@ if (!isset($_SESSION["connected_id"])) {
                         ?>
                     </footer>
                 </article>
-            <?php
-            } // et de pas oublier de fermer ici vote while
-            ?>
-
-
+            <?php } ?>
         </main>
     </div>
 </body>

@@ -1,4 +1,5 @@
 <?php
+/* GESTION DE SESSION */
 session_start();
 
 if (!isset($_SESSION["connected_id"])) {
@@ -11,6 +12,7 @@ if (!isset($_SESSION["connected_id"])) {
     }
 }
 ?>
+
 <!doctype html>
 <html lang="fr">
 
@@ -37,18 +39,13 @@ if (!isset($_SESSION["connected_id"])) {
                 <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
                 <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
             </ul>
-
         </nav>
     </header>
 
     <?php
-    /**
-     * Etape 1: Ouvrir une connexion avec la base de donnée.
-     */
-    // on va en avoir besoin pour la suite
-    //$mysqli = new mysqli("localhost", "root", "root", "socialnetwork");
+    /* CONNEXION A LA BASE DE DONNEES */
     include 'sqlConnection.php';
-    //verification
+    // -- Vérification de la connexion --
     if ($mysqli->connect_errno) {
         echo ("Échec de la connexion : " . $mysqli->connect_error);
         exit();
@@ -58,21 +55,16 @@ if (!isset($_SESSION["connected_id"])) {
         <aside>
             <h2>Mots-clés</h2>
             <?php
-            /*
-                 * Etape 2 : trouver tous les mots clés
-                 */
+            /* REQUETE SUR LES MOTS CLES */
             $laQuestionEnSql = "SELECT * FROM `tags` LIMIT 50";
             $lesInformations = $mysqli->query($laQuestionEnSql);
-            // Vérification
+            // -- Vérification de la requête --
             if (!$lesInformations) {
                 echo ("Échec de la requete : " . $mysqli->error);
                 exit();
             }
 
-            /*
-                 * Etape 3 : @todo : Afficher les mots clés en s'inspirant de ce qui a été fait dans news.php
-                 * Attention à en pas oublier de modifier tag_id=321 avec l'id du mot dans le lien
-                 */
+            /* AFFICHAGE DES MOTS CLES */
             while ($tag = $lesInformations->fetch_assoc()) {
                 $tagId = $tag["id"];
             ?>
@@ -90,22 +82,16 @@ if (!isset($_SESSION["connected_id"])) {
         <main>
             <h2>Utilisatrices</h2>
             <?php
-            /*
-                 * Etape 4 : trouver tous les mots clés
-                 * PS: on note que la connexion $mysqli à la base a été faite, pas besoin de la refaire.
-                 */
+            /* REQUETE SUR LES UTILISATRICES */
             $laQuestionEnSql = "SELECT * FROM `users` LIMIT 50";
             $lesInformations = $mysqli->query($laQuestionEnSql);
-            // Vérification
+            // -- Vérification  de la requete --
             if (!$lesInformations) {
                 echo ("Échec de la requete : " . $mysqli->error);
                 exit();
             }
 
-            /*
-                 * Etape 5 : @todo : Afficher les utilisatrices en s'inspirant de ce qui a été fait dans news.php
-                 * Attention à en pas oublier de modifier dans le lien les "user_id=123" avec l'id de l'utilisatrice
-                 */
+            /* AFFICHAGE DES UTILISATRICES */
             while ($tag = $lesInformations->fetch_assoc()) {
                 $authorId = $tag["id"];
             ?>

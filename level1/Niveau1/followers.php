@@ -1,12 +1,13 @@
 <?php
 session_start();
-
+/* GESTION DE SESSION */
 if (!isset($_SESSION["connected_id"])) {
     header('Location: ./login.php');
     exit();
 } else {
     $sessionId = $_SESSION["connected_id"];
-}
+};
+
 ?>
 <!doctype html>
 <html lang="fr">
@@ -45,12 +46,11 @@ if (!isset($_SESSION["connected_id"])) {
                 <p>Sur cette page vous trouverez la liste des personnes qui
                     suivent les messages de l'utilisatrice
                     n° <?php echo intval($_GET['user_id']) ?></p>
-
             </section>
         </aside>
         <main class='contacts'>
             <?php
-            // Etape 1: récupérer l'id de l'utilisateur
+            /*
             $userId = intval($_GET['user_id']);
             if ((!$userId || $userId != $sessionId) && $sessionId) {
                 Header("Location: ./followers.php?user_id=$sessionId");
